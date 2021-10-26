@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
+typedef struct Joueur{
+    int vie;
+    int x;
+    int y; // ou double si deplacement libre
+    int nbbombe;
+
+
+}Joueur;
+
 int main(int argc, char* argv[])
 {
     SDL_Window *window = NULL;
