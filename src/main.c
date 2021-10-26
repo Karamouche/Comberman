@@ -1,14 +1,25 @@
 #include <stdio.h>
+#include "main.h"
 #include <SDL2/SDL.h>
 
-typedef struct Joueur{
+
+enum Position{
+    HAUT,
+    BAS,
+    GAUCHE,
+    DROITE
+};
+
+
+struct Joueur{
     int vie;
     int x;
     int y; // ou double si deplacement libre
     int nbbombe;
+    Position position;
+    //Ajouter l'orientation du joueur
 
-
-}Joueur;
+};
 
 int main(int argc, char* argv[])
 {
