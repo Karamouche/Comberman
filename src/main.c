@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
         return -1;
     }
-    window = SDL_CreateWindow("Ma premiere fenetre",
+    window = SDL_CreateWindow("Ma deuxieme fenetre",
                               SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED,
                               500, 500, SDL_WINDOW_SHOWN);
