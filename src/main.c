@@ -2,6 +2,9 @@
 #include "main.h"
 #include <SDL2/SDL.h>
 
+#define TRUE 1
+#define FALSE 0
+
 
 enum Position{
     HAUT,
@@ -24,16 +27,16 @@ struct Joueur{
 int main(int argc, char* argv[])
 {
     SDL_Window *window = NULL;
-    if(SDL_Init(SDL_INIT_VIDEO) != 0)
+    if(SDL_Init(SDL_INIT_VIDEO) != FALSE) // INIT
     {
         fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-        return -1;
+        exit(EXIT_FAILURE);
     }
-    window = SDL_CreateWindow("Ma deuxieme fenetre",
+    window = SDL_CreateWindow("Comberman",
                               SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED,
                               500, 500, SDL_WINDOW_SHOWN);
-    if(NULL == window){
+    if(window == NULL){
         fprintf(stderr, "Erreur de creation de la fenetre : %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
@@ -43,6 +46,6 @@ int main(int argc, char* argv[])
         SDL_Delay(3000);
         SDL_DestroyWindow(window);
     }
-    SDL_Quit();
-    return 0;
+    SDL_Quit(); //QUIT
+    return EXIT_SUCCESS;
 }
