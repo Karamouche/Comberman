@@ -27,10 +27,12 @@ struct Joueur{
 int main(int argc, char* argv[])
 {
     SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    int statut = EXIT_FAILURE;
     if(SDL_Init(SDL_INIT_VIDEO) != FALSE) // INIT
     {
         fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-        exit(EXIT_FAILURE);
+        goto Quit;
     }
     window = SDL_CreateWindow("Comberman",
                               SDL_WINDOWPOS_CENTERED,
@@ -38,14 +40,23 @@ int main(int argc, char* argv[])
                               500, 500, SDL_WINDOW_SHOWN);
     if(window == NULL){
         fprintf(stderr, "Erreur de creation de la fenetre : %s\n", SDL_GetError());
-        exit(EXIT_FAILURE);
+        goto Quit;
     }
-    else
-    {
-        //PROGRAMME PRINCIPAL
-        SDL_Delay(3000);
-        SDL_DestroyWindow(window);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL){
+        fprintf(stderr, "Erreur de creation de la fenetre : %s\n", SDL_GetError());
+        goto Quit;
     }
+    SDL_Delay(3000);
+    SDL_DestroyWindow(window);
     SDL_Quit(); //QUIT
-    return EXIT_SUCCESS;
+    statut = EXIT_SUCCESS;
+
+Quit:
+    if(NULL != renderer)
+        SDL_DestroyRenderer(renderer);
+    if(NULL != window)
+        SDL_DestroyWindow(window);
+    SDL_Quit();
+    return statut;
 }
