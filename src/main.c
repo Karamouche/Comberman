@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Erreur de creation de la fenetre : %s\n", SDL_GetError());
         goto Quit;
     }
+    SDL_SetWindowIcon(window, SDL_LoadBMP("icon.bmp"));
     SDL_Delay(3000);
     SDL_DestroyWindow(window);
     SDL_Quit(); //QUIT
