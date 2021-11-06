@@ -7,6 +7,8 @@ int main(int argc, char* argv[])
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Texture *menu = NULL;
+    SDL_Event event;
+    STATUT statut = STATUT.MENU;
 
     int statut = EXIT_FAILURE;
 
@@ -17,10 +19,14 @@ int main(int argc, char* argv[])
     menu = loadImage("menu.bmp", renderer);
     if(menu == NULL)
         goto Quit;
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, menu, NULL, NULL); // Affiche ma texture sur touts l'écran
-    SDL_RenderPresent(renderer);
-    SDL_Delay(3000);
+    showTexture(renderer, menu);
+    int LOOP = TRUE;
+    while(LOOP){
+        while(SDL_PollEvent(&event)){
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE)
+                LOOP = FALSE;
+        }
+    }
     SDL_DestroyWindow(window);
     SDL_Quit(); //QUIT
     statut = EXIT_SUCCESS;
@@ -74,13 +80,24 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     return texture;
 }
 
-enum Position{
+void showTexture(SDL_Renderer *renderer, SDL_Texture *texture){
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, NULL); // Affiche ma texture sur touts l'écran
+    SDL_RenderPresent(renderer);
+}
+
+enum POSITION{
     HAUT,
     BAS,
     GAUCHE,
     DROITE
 };
 
+enum STATUT{
+    MENU,
+    INGAME,
+    ENDGAME
+};
 
 struct Joueur{
     int vie;
@@ -91,4 +108,6 @@ struct Joueur{
     //Ajouter l'orientation du joueur
 
 };
+
+
 
