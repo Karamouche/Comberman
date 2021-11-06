@@ -4,13 +4,13 @@
 
 int main(int argc, char* argv[])
 {
+    int statut = MENU;
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Texture *menu = NULL;
     SDL_Event event;
-    STATUT statut = STATUT.MENU;
 
-    int statut = EXIT_FAILURE;
+    int exit = EXIT_FAILURE;
 
     if(0 != init(&window, &renderer, 600, 600))
         goto Quit;
@@ -23,13 +23,25 @@ int main(int argc, char* argv[])
     int LOOP = TRUE;
     while(LOOP){
         while(SDL_PollEvent(&event)){
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE)
-                LOOP = FALSE;
+            switch(event.type){
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym){
+                case SDLK_SPACE:
+                    LOOP = FALSE;
+                    break;
+                case SDLK_ESCAPE:
+                    LOOP = FALSE;
+                    break;
+                }
+            case SDL_QUIT:
+                LOOP= FALSE;
+                break;
+            }
         }
     }
     SDL_DestroyWindow(window);
     SDL_Quit(); //QUIT
-    statut = EXIT_SUCCESS;
+    exit = EXIT_SUCCESS;
 
 Quit://TO QUIT
     if(menu != NULL)
@@ -39,8 +51,9 @@ Quit://TO QUIT
     if(window != NULL)
         SDL_DestroyWindow(window);
     SDL_Quit();
-    return statut;
+    return exit;
 }
+
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 {
@@ -67,7 +80,7 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     tmp = SDL_LoadBMP(path);
     if(NULL == tmp)
     {
-        printf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
         return NULL;
     }
     texture = SDL_CreateTextureFromSurface(renderer, tmp);
@@ -86,27 +99,13 @@ void showTexture(SDL_Renderer *renderer, SDL_Texture *texture){
     SDL_RenderPresent(renderer);
 }
 
-enum POSITION{
-    HAUT,
-    BAS,
-    GAUCHE,
-    DROITE
-};
-
-enum STATUT{
-    MENU,
-    INGAME,
-    ENDGAME
-};
 
 struct Joueur{
     int vie;
     int x;
     int y; // ou double si deplacement libre
     int nbbombe;
-    Position position;
-    //Ajouter l'orientation du joueur
-
+    int position;
 };
 
 
