@@ -6,6 +6,7 @@
 typedef struct Joueur Joueur; //joueur
 enum {HAUT, BAS, GAUCHE, DROITE};
 enum {MENU, INGAME, ENDGAME};
+enum{JOUEUR, BRIQUE, BLOC, BOMBE};
 
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
