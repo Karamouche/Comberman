@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Texture *menu = NULL;
+    SDL_Texture *fond = NULL;
     SDL_Event event;
 
     int exit = EXIT_FAILURE;
@@ -17,7 +18,10 @@ int main(int argc, char* argv[])
     SDL_SetWindowIcon(window, SDL_LoadBMP("icon.bmp"));
     SDL_SetWindowTitle(window, NAME);
     menu = loadImage("menu.bmp", renderer);
+    fond = loadImage("fond.bmp", renderer);
     if(menu == NULL)
+        goto Quit;
+    if(fond == NULL)
         goto Quit;
     showTexture(renderer, menu);
     int LOOP = TRUE;
@@ -30,7 +34,8 @@ int main(int argc, char* argv[])
                     if (statut == MENU)
                     {
                         statut =  INGAME;
-                        game(window);
+                        SDL_DestroyTexture(menu);
+                        SDL_UpdateWindowSurface(window);
                     }
                     break;
                 case SDLK_ESCAPE:
@@ -43,16 +48,19 @@ int main(int argc, char* argv[])
             }
         }
     }
-
+    SDL_DestroyWindow(window);
     SDL_Quit(); //QUIT
     exit = EXIT_SUCCESS;
 
 Quit://TO QUIT
     if(menu != NULL)
         SDL_DestroyTexture(menu);
+    if(fond != NULL)
+        SDL_DestroyTexture(fond);
     if(renderer != NULL)
         SDL_DestroyRenderer(renderer);
-
+    if(window != NULL)
+        SDL_DestroyWindow(window);
     SDL_Quit();
     return exit;
 }

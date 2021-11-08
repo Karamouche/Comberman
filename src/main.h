@@ -12,4 +12,3 @@ enum{JOUEUR, BRIQUE, BLOC, BOMBE};
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 void showTexture(SDL_Renderer *renderer, SDL_Texture *texture);
-void game(SDL_Window *window);
