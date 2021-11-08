@@ -27,7 +27,11 @@ int main(int argc, char* argv[])
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym){
                 case SDLK_SPACE:
-                    LOOP = FALSE;
+                    if (statut == MENU)
+                    {
+                        statut =  INGAME;
+                        game(window);
+                    }
                     break;
                 case SDLK_ESCAPE:
                     LOOP = FALSE;
@@ -39,7 +43,7 @@ int main(int argc, char* argv[])
             }
         }
     }
-    SDL_DestroyWindow(window);
+
     SDL_Quit(); //QUIT
     exit = EXIT_SUCCESS;
 
@@ -48,8 +52,7 @@ Quit://TO QUIT
         SDL_DestroyTexture(menu);
     if(renderer != NULL)
         SDL_DestroyRenderer(renderer);
-    if(window != NULL)
-        SDL_DestroyWindow(window);
+
     SDL_Quit();
     return exit;
 }
