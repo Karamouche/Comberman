@@ -13,13 +13,19 @@ typedef struct Joueur{
     int nbbombe;
     int position;
 }Joueur;
+typedef struct Bomb{
+    int shown;
+    SDL_Rect rect;
+    SDL_Texture* texture;
+    int time;
+}Bomb;
 enum {HAUT, BAS, GAUCHE, DROITE};
 enum {MENU, INGAME, ENDGAME};
-enum{VIDE, JOUEUR, BLOC, BRIQUE, BOMBE};
+enum{VIDE, BLOC, BRIQUE, BOMBE, JOUEUR1, JOUEUR2};
 
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 void beemove(Joueur* joueur,SDL_Renderer* renderer, int DIR, int** map);
-void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, SDL_Renderer* renderer, int** map);
+void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map);
 void init_map(int** map);

@@ -17,12 +17,14 @@ int main(int argc, char* argv[])
     SDL_Renderer *renderer = NULL;
     SDL_Texture *background = NULL;
     SDL_Texture *beeTexture = NULL;
+    SDL_Texture *bombTexture = NULL;
     SDL_Event event;
-    Joueur* bee = malloc(sizeof(Joueur));
-    bee->rect.h = CASESIZE;
-    bee->rect.w = CASESIZE;
-    bee->rect.x = 0 + START;
-    bee->rect.y = 0 + START;
+
+    Joueur* bee1 = malloc(sizeof(Joueur));
+    bee1->rect.h = CASESIZE;
+    bee1->rect.w = CASESIZE;
+    bee1->rect.x = 0 + START;
+    bee1->rect.y = 0 + START;
 
     int exit = EXIT_FAILURE;
 
@@ -37,14 +39,23 @@ int main(int argc, char* argv[])
     beeTexture = loadImage("bas.bmp", renderer);
     if(beeTexture == NULL)
         goto Quit;
+    bombTexture = loadImage("bomb.bmp", renderer);
+    if(bombTexture == NULL)
+        goto Quit;
 
-    bee->position = BAS;
-    bee->vie = 3;
-    bee->nbbombe = 5;
+    bee1->position = BAS;
+    bee1->vie = 3;
+    bee1->nbbombe = 5;
+
+    Bomb *bomb1 = malloc(sizeof(Bomb));
+    bomb1->shown = FALSE;
+    bomb1->texture = bombTexture;
+    bomb1->rect.h = 40;
+    bomb1->rect.w = 40;
 
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, background, NULL, NULL); // Affiche ma texture sur touts l'écran
-    SDL_RenderCopy(renderer, beeTexture, NULL, &bee->rect);
+    SDL_RenderCopy(renderer, beeTexture, NULL, &bee1->rect);
     SDL_RenderPresent(renderer);
 
     int LOOP = TRUE;
@@ -54,29 +65,29 @@ int main(int argc, char* argv[])
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym){
                 case SDLK_SPACE:
-                    //POSER UNE BOMBE
+                    map[bee1->rect.x/CASESIZE][bee1->rect.y/CASESIZE] = BOMBE;
                     break;
                 case SDLK_ESCAPE:
                     LOOP = FALSE;
                     break;
                 case SDLK_DOWN:
-                    beemove(bee, renderer, BAS, map);
+                    beemove(bee1, renderer, BAS, map);
                     break;
                 case SDLK_UP:
-                    beemove(bee, renderer, HAUT, map);
+                    beemove(bee1, renderer, HAUT, map);
                     break;
                 case SDLK_LEFT:
-                    beemove(bee, renderer, GAUCHE, map);
+                    beemove(bee1, renderer, GAUCHE, map);
                     break;
                 case SDLK_RIGHT:
-                    beemove(bee, renderer, DROITE, map);
+                    beemove(bee1, renderer, DROITE, map);
                     break;
                 }break;
             case SDL_QUIT:
                 LOOP = FALSE;
                 break;
             }
-        render(bee, background, beeTexture, renderer, map);
+        render(bee1, background, beeTexture, bomb1, renderer, map);
         SDL_Delay(32);
         }
     }
@@ -89,6 +100,8 @@ Quit://TO QUIT
         SDL_DestroyTexture(background);
     if(beeTexture != NULL)
         SDL_DestroyTexture(beeTexture);
+    if(bombTexture != NULL)
+        SDL_DestroyTexture(bombTexture);
     if(renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if(window != NULL)
@@ -96,7 +109,7 @@ Quit://TO QUIT
     for(int i = 0 ; i<SIZE ; i++)
         free(map[i]);
     free(map);
-    free(bee);
+    free(bee1);
     //free(map);
     SDL_Quit();
     return exit;
@@ -137,11 +150,15 @@ void init_map(int** map){
         map[i][0] = BLOC;
     for(int i = 0 ; i<SIZE ; i++)
         map[i][14] = BLOC;
-
-    map[1][1] = JOUEUR;
+    //BLOCS DU MILIEU
+    for(int i = 2 ; i<SIZE-2 ; i+=2){
+        for(int j = 2 ; j<SIZE-2 ; j+=2)
+            map[i][j] = BLOC;
+    }
+    map[1][1] = JOUEUR1;
 }
 
-void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, SDL_Renderer* renderer, int** map){
+void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map){
     switch(joueur->position){
     case HAUT:
         beeTexture = loadImage("haut.bmp", renderer);
@@ -157,8 +174,20 @@ void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, SD
         break;
     }
 
+    for(int i=0 ; i<SIZE ; i++ ){
+        for(int j = 0 ; j<SIZE ; j++){
+            if(map[i][j] == BOMBE){
+                bomb1->rect.x = i*CASESIZE;
+                bomb1->rect.y = j*CASESIZE;
+                bomb1->shown = TRUE;
+            }
+        }
+    }
+
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, background, NULL, NULL);
+    if(bomb1->shown)
+        SDL_RenderCopy(renderer, bomb1->texture, NULL, &bomb1->rect);
     SDL_RenderCopy(renderer, beeTexture, NULL, &joueur->rect);
     SDL_RenderPresent(renderer);
 }
@@ -186,28 +215,36 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 void beemove(Joueur *joueur,SDL_Renderer* renderer, int DIR, int** map){
     switch(DIR){
     case HAUT:
-        joueur->position = HAUT;
         if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BLOC){
+            map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
+            map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] = JOUEUR1;
             joueur->rect.y -= CASESIZE;
         }
+        joueur->position = HAUT;
         break;
     case BAS:
-        joueur->position = BAS;
         if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BLOC){
+            map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
+            map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] = JOUEUR1;
             joueur->rect.y += CASESIZE;
         }
+        joueur->position = BAS;
         break;
     case DROITE:
-        joueur->position = DROITE;
         if(map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BLOC){
+            map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
+            map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] = JOUEUR1;
             joueur->rect.x += CASESIZE;
         }
+        joueur->position = DROITE;
         break;
     case GAUCHE:
-        joueur->position = GAUCHE;
         if(map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BLOC){
+            map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
+            map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] = JOUEUR1;
             joueur->rect.x -= CASESIZE;
         }
+        joueur->position = GAUCHE;
         break;
     }
 }
