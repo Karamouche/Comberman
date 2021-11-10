@@ -25,6 +25,8 @@ int main(int argc, char* argv[])
     bee1->rect.w = CASESIZE;
     bee1->rect.x = 0 + START;
     bee1->rect.y = 0 + START;
+    bee1->frame = 0;
+    bee1->UP = FALSE;
 
     int exit = EXIT_FAILURE;
 
@@ -36,7 +38,7 @@ int main(int argc, char* argv[])
     background = loadImage("background.bmp", renderer);
     if(background == NULL)
         goto Quit;
-    beeTexture = loadImage("bas.bmp", renderer);
+    beeTexture = loadImage("beeTexture/bas0.bmp", renderer);
     if(beeTexture == NULL)
         goto Quit;
     bombTexture = loadImage("bomb.bmp", renderer);
@@ -87,9 +89,10 @@ int main(int argc, char* argv[])
                 LOOP = FALSE;
                 break;
             }
-        render(bee1, background, beeTexture, bomb1, renderer, map);
-        SDL_Delay(32);
         }
+        bee1->frame++;
+        render(bee1, background, beeTexture, bomb1, renderer, map);
+        SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
     SDL_Quit(); //QUIT
@@ -159,18 +162,37 @@ void init_map(int** map){
 }
 
 void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map){
+    if(joueur->frame == 20){
+        if(joueur->UP)
+            joueur->UP = FALSE;
+        else
+            joueur->UP = TRUE;
+        joueur->frame = 0;
+        }
     switch(joueur->position){
     case HAUT:
-        beeTexture = loadImage("haut.bmp", renderer);
+        if(joueur->UP)
+            beeTexture = loadImage("beeTexture/haut1.bmp", renderer);
+        else
+            beeTexture = loadImage("beeTexture/haut0.bmp", renderer);
         break;
     case BAS:
-        beeTexture = loadImage("bas.bmp", renderer);
+        if(joueur->UP)
+            beeTexture = loadImage("beeTexture/bas1.bmp", renderer);
+        else
+            beeTexture = loadImage("beeTexture/bas0.bmp", renderer);
         break;
     case DROITE:
-        beeTexture = loadImage("droite.bmp", renderer);
+        if(joueur->UP)
+            beeTexture = loadImage("beeTexture/droite1.bmp", renderer);
+        else
+            beeTexture = loadImage("beeTexture/droite0.bmp", renderer);
         break;
     case GAUCHE:
-        beeTexture = loadImage("gauche.bmp", renderer);
+        if(joueur->UP)
+            beeTexture = loadImage("beeTexture/gauche1.bmp", renderer);
+        else
+            beeTexture = loadImage("beeTexture/gauche0.bmp", renderer);
         break;
     }
 

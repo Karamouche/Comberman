@@ -9,6 +9,8 @@
 
 typedef struct Joueur{
     int vie;
+    int frame;
+    int UP;
     SDL_Rect rect;
     int nbbombe;
     int position;
