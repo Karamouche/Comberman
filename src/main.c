@@ -15,9 +15,12 @@ int main(int argc, char* argv[])
 
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
+
     SDL_Texture *background = NULL;
     SDL_Texture *beeTexture = NULL;
     SDL_Texture *bombTexture = NULL;
+    SDL_Texture *menuTexture = NULL;
+    SDL_Texture *brickTexture = NULL;
     SDL_Event event;
 
     Joueur* bee1 = malloc(sizeof(Joueur));
@@ -44,6 +47,17 @@ int main(int argc, char* argv[])
     bombTexture = loadImage("bomb.bmp", renderer);
     if(bombTexture == NULL)
         goto Quit;
+    menuTexture = loadImage("menu.bmp", renderer);
+    if(menuTexture == NULL)
+        goto Quit;
+    brickTexture = loadImage("brick.bmp", renderer);
+    if(brickTexture == NULL)
+        goto Quit;
+
+    Textures textures;
+    textures.background = background;
+    textures.menu = menuTexture;
+
 
     bee1->position = BAS;
     bee1->vie = 3;
@@ -67,22 +81,29 @@ int main(int argc, char* argv[])
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym){
                 case SDLK_SPACE:
-                    map[bee1->rect.x/CASESIZE][bee1->rect.y/CASESIZE] = BOMBE;
+                    if(statut == MENU)
+                        statut = INGAME;
+                    else if(statut == INGAME)
+                        map[bee1->rect.x/CASESIZE][bee1->rect.y/CASESIZE] = BOMBE;
                     break;
                 case SDLK_ESCAPE:
                     LOOP = FALSE;
                     break;
                 case SDLK_DOWN:
-                    beemove(bee1, renderer, BAS, map);
+                    if(statut == INGAME)
+                        beemove(bee1, renderer, BAS, map);
                     break;
                 case SDLK_UP:
-                    beemove(bee1, renderer, HAUT, map);
+                    if(statut == INGAME)
+                        beemove(bee1, renderer, HAUT, map);
                     break;
                 case SDLK_LEFT:
-                    beemove(bee1, renderer, GAUCHE, map);
+                    if(statut == INGAME)
+                        beemove(bee1, renderer, GAUCHE, map);
                     break;
                 case SDLK_RIGHT:
-                    beemove(bee1, renderer, DROITE, map);
+                    if(statut == INGAME)
+                        beemove(bee1, renderer, DROITE, map);
                     break;
                 }break;
             case SDL_QUIT:
@@ -91,7 +112,7 @@ int main(int argc, char* argv[])
             }
         }
         bee1->frame++;
-        render(bee1, background, beeTexture, bomb1, renderer, map);
+        render(bee1, textures, beeTexture, bomb1, renderer, map, statut);
         SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
@@ -105,6 +126,10 @@ Quit://TO QUIT
         SDL_DestroyTexture(beeTexture);
     if(bombTexture != NULL)
         SDL_DestroyTexture(bombTexture);
+    if(menuTexture != NULL)
+        SDL_DestroyTexture(menuTexture);
+    if(brickTexture != NULL)
+        SDL_DestroyTexture(brickTexture);
     if(renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if(window != NULL)
@@ -161,57 +186,63 @@ void init_map(int** map){
     map[1][1] = JOUEUR1;
 }
 
-void render(Joueur *joueur, SDL_Texture* background, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map){
-    if(joueur->frame == 20){
-        if(joueur->UP)
-            joueur->UP = FALSE;
-        else
-            joueur->UP = TRUE;
-        joueur->frame = 0;
+void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map, int statut){
+    if(statut == MENU){
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, textures.menu, NULL, NULL);
+        SDL_RenderPresent(renderer);
+    }else if(statut == INGAME){
+        if(joueur->frame == 20){
+            if(joueur->UP)
+                joueur->UP = FALSE;
+            else
+                joueur->UP = TRUE;
+            joueur->frame = 0;
+            }
+        switch(joueur->position){
+        case HAUT:
+            if(joueur->UP)
+                beeTexture = loadImage("beeTexture/haut1.bmp", renderer);
+            else
+                beeTexture = loadImage("beeTexture/haut0.bmp", renderer);
+            break;
+        case BAS:
+            if(joueur->UP)
+                beeTexture = loadImage("beeTexture/bas1.bmp", renderer);
+            else
+                beeTexture = loadImage("beeTexture/bas0.bmp", renderer);
+            break;
+        case DROITE:
+            if(joueur->UP)
+                beeTexture = loadImage("beeTexture/droite1.bmp", renderer);
+            else
+                beeTexture = loadImage("beeTexture/droite0.bmp", renderer);
+            break;
+        case GAUCHE:
+            if(joueur->UP)
+                beeTexture = loadImage("beeTexture/gauche1.bmp", renderer);
+            else
+                beeTexture = loadImage("beeTexture/gauche0.bmp", renderer);
+            break;
         }
-    switch(joueur->position){
-    case HAUT:
-        if(joueur->UP)
-            beeTexture = loadImage("beeTexture/haut1.bmp", renderer);
-        else
-            beeTexture = loadImage("beeTexture/haut0.bmp", renderer);
-        break;
-    case BAS:
-        if(joueur->UP)
-            beeTexture = loadImage("beeTexture/bas1.bmp", renderer);
-        else
-            beeTexture = loadImage("beeTexture/bas0.bmp", renderer);
-        break;
-    case DROITE:
-        if(joueur->UP)
-            beeTexture = loadImage("beeTexture/droite1.bmp", renderer);
-        else
-            beeTexture = loadImage("beeTexture/droite0.bmp", renderer);
-        break;
-    case GAUCHE:
-        if(joueur->UP)
-            beeTexture = loadImage("beeTexture/gauche1.bmp", renderer);
-        else
-            beeTexture = loadImage("beeTexture/gauche0.bmp", renderer);
-        break;
-    }
 
-    for(int i=0 ; i<SIZE ; i++ ){
-        for(int j = 0 ; j<SIZE ; j++){
-            if(map[i][j] == BOMBE){
-                bomb1->rect.x = i*CASESIZE;
-                bomb1->rect.y = j*CASESIZE;
-                bomb1->shown = TRUE;
+        for(int i=0 ; i<SIZE ; i++ ){
+            for(int j = 0 ; j<SIZE ; j++){
+                if(map[i][j] == BOMBE){
+                    bomb1->rect.x = i*CASESIZE;
+                    bomb1->rect.y = j*CASESIZE;
+                    bomb1->shown = TRUE;
+                }
             }
         }
-    }
 
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, background, NULL, NULL);
-    if(bomb1->shown)
-        SDL_RenderCopy(renderer, bomb1->texture, NULL, &bomb1->rect);
-    SDL_RenderCopy(renderer, beeTexture, NULL, &joueur->rect);
-    SDL_RenderPresent(renderer);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, textures.background, NULL, NULL);
+        if(bomb1->shown)
+            SDL_RenderCopy(renderer, bomb1->texture, NULL, &bomb1->rect);
+        SDL_RenderCopy(renderer, beeTexture, NULL, &joueur->rect);
+        SDL_RenderPresent(renderer);
+    }
 }
 
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
