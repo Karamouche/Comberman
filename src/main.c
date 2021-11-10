@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <SDL2/SDL.h>
 #include "main.h"
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+    //ON INITIALISE LE RAND
+    srand(time(NULL));
     int statut = MENU;
     int** map;
     map = (int**)malloc(sizeof(int*)*SIZE);
