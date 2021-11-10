@@ -11,7 +11,17 @@ int main(int argc, char* argv[])
         map[i] = (int*)malloc(sizeof(int)*SIZE);
     if(map == NULL)
         goto Quit;
-    init_map(map);
+
+    SDL_Rect* bricks;
+    bricks = (SDL_Rect*)malloc(sizeof(SDL_Rect)*NBRICKS);
+    if(bricks == NULL)
+        goto Quit;
+    for(int i = 0 ; i<NBRICKS ; i++){
+        bricks[i].h = CASESIZE;
+        bricks[i].w = CASESIZE;
+    }
+
+    init_map(map, bricks);
 
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -57,6 +67,7 @@ int main(int argc, char* argv[])
     Textures textures;
     textures.background = background;
     textures.menu = menuTexture;
+    textures.brick = brickTexture;
 
 
     bee1->position = BAS;
@@ -111,8 +122,9 @@ int main(int argc, char* argv[])
                 break;
             }
         }
-        bee1->frame++;
-        render(bee1, textures, beeTexture, bomb1, renderer, map, statut);
+        if(statut == INGAME)
+            bee1->frame++;
+        render(bee1, textures, beeTexture, bomb1, renderer, map, bricks, statut);
         SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
@@ -138,6 +150,7 @@ Quit://TO QUIT
         free(map[i]);
     free(map);
     free(bee1);
+    free(bricks);
     //free(map);
     SDL_Quit();
     return exit;
@@ -162,8 +175,7 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
     return 0;
 }
 
-void init_map(int** map){
-    int i = 0;
+void init_map(int** map, SDL_Rect* bricks){
     //TOUTE LA MAP EN VIDE
     for(int i = 0 ; i < SIZE ; i++){
         for(int j = 0 ; j < SIZE ; j++)
@@ -183,10 +195,21 @@ void init_map(int** map){
         for(int j = 2 ; j<SIZE-2 ; j+=2)
             map[i][j] = BLOC;
     }
+    int i = 0;
+    int j = 0;
+    for(int n = 0 ; n<NBRICKS ; n++){
+        i = rand() % SIZE;
+        j = rand() % SIZE;
+        while(map[i][j] != VIDE){
+            i = rand() % SIZE;
+            j = rand() % SIZE;
+        }
+        map[i][j] = BRICK;
+    }
     map[1][1] = JOUEUR1;
 }
 
-void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map, int statut){
+void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut){
     if(statut == MENU){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, textures.menu, NULL, NULL);
@@ -199,6 +222,8 @@ void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bo
                 joueur->UP = TRUE;
             joueur->frame = 0;
             }
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, textures.background, NULL, NULL);
         switch(joueur->position){
         case HAUT:
             if(joueur->UP)
@@ -225,19 +250,21 @@ void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bo
                 beeTexture = loadImage("beeTexture/gauche0.bmp", renderer);
             break;
         }
-
+        int b = 0;
         for(int i=0 ; i<SIZE ; i++ ){
             for(int j = 0 ; j<SIZE ; j++){
                 if(map[i][j] == BOMBE){
                     bomb1->rect.x = i*CASESIZE;
                     bomb1->rect.y = j*CASESIZE;
                     bomb1->shown = TRUE;
+                }else if(map[i][j] == BRICK){
+                    bricks[b].x = i * CASESIZE;
+                    bricks[b].y = j * CASESIZE;
+                    SDL_RenderCopy(renderer, textures.brick, NULL, &bricks[b]);
+                    b++;
                 }
             }
         }
-
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, textures.background, NULL, NULL);
         if(bomb1->shown)
             SDL_RenderCopy(renderer, bomb1->texture, NULL, &bomb1->rect);
         SDL_RenderCopy(renderer, beeTexture, NULL, &joueur->rect);
@@ -268,7 +295,8 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
 void beemove(Joueur *joueur,SDL_Renderer* renderer, int DIR, int** map){
     switch(DIR){
     case HAUT:
-        if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BLOC){
+        if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BLOC &&
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BRICK){
             map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
             map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] = JOUEUR1;
             joueur->rect.y -= CASESIZE;
@@ -276,7 +304,8 @@ void beemove(Joueur *joueur,SDL_Renderer* renderer, int DIR, int** map){
         joueur->position = HAUT;
         break;
     case BAS:
-        if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BLOC){
+        if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BLOC &&
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BRICK){
             map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
             map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] = JOUEUR1;
             joueur->rect.y += CASESIZE;
@@ -284,7 +313,8 @@ void beemove(Joueur *joueur,SDL_Renderer* renderer, int DIR, int** map){
         joueur->position = BAS;
         break;
     case DROITE:
-        if(map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BLOC){
+        if(map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BLOC &&
+           map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BRICK){
             map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
             map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] = JOUEUR1;
             joueur->rect.x += CASESIZE;
@@ -292,7 +322,8 @@ void beemove(Joueur *joueur,SDL_Renderer* renderer, int DIR, int** map){
         joueur->position = DROITE;
         break;
     case GAUCHE:
-        if(map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BLOC){
+        if(map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BLOC &&
+           map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BRICK){
             map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
             map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] = JOUEUR1;
             joueur->rect.x -= CASESIZE;

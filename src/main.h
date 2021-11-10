@@ -4,6 +4,7 @@
 #define CASESIZE 40
 #define START 40
 #define SIZE 15
+#define NBRICKS 35
 
 //RAJOUTER UNE PROTECTION
 
@@ -30,11 +31,11 @@ typedef struct Textures{
 }Textures;
 enum {HAUT, BAS, GAUCHE, DROITE};
 enum {MENU, INGAME, ENDGAME};
-enum{VIDE, BLOC, BRIQUE, BOMBE, JOUEUR1, JOUEUR2};
+enum{VIDE, BLOC, BRICK, BOMBE, JOUEUR1, JOUEUR2};
 
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 void beemove(Joueur* joueur,SDL_Renderer* renderer, int DIR, int** map);
-void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map, int statut);
-void init_map(int** map);
+void render(Joueur *joueur, Textures textures, SDL_Texture* beeTexture, Bomb* bomb1, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut);
+void init_map(int** map, SDL_Rect* bricks);
