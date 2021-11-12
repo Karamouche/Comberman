@@ -6,6 +6,7 @@ typedef struct Joueur{
     int frame;
     int UP;
     SDL_Rect rect;
+    SDL_Texture* texture;
     int nbbombe;
     int position;
     int blinking;
