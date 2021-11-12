@@ -80,6 +80,7 @@ int main(int argc, char* argv[]){
     bee1->nbbombe = 5;
 
     Bomb *bomb1 = malloc(sizeof(Bomb));
+    bomb1->frame = 0;
     bomb1->shown = FALSE;
     bomb1->texture = bombTexture;
     bomb1->rect.h = 40;
