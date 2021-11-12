@@ -43,6 +43,7 @@ int main(int argc, char* argv[]){
     bee1->rect.y = 0 + START;
     bee1->frame = 0;
     bee1->UP = FALSE;
+    bee1->blinking = FALSE;
 
     int exit = EXIT_FAILURE;
 
@@ -363,8 +364,8 @@ void explosion(Joueur* joueur, Bomb* bomb, int** map, SDL_Rect* bricks){
     int bLeft = FALSE;
     int bRight = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
-            //BUG OUT OF RANGE
-        if(y/CASESIZE + i<16 && y/CASESIZE - i >= 0 && x/CASESIZE + i<16 && x/CASESIZE - i>=0){
+            //RAJOUTER LES DEGATS SUR LES JOUEURS
+        if(x/CASESIZE + i<15 && x/CASESIZE - i>=0 && y/CASESIZE + i<15 && y/CASESIZE - i >= 0){
             if(map[x/CASESIZE][y/CASESIZE + i] == BRICK && !bBot){
                 map[x/CASESIZE][y/CASESIZE + i] = VIDE;
                 bBot = TRUE;

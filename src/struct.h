@@ -8,6 +8,7 @@ typedef struct Joueur{
     SDL_Rect rect;
     int nbbombe;
     int position;
+    int blinking;
 }Joueur;
 
 typedef struct Bomb{
