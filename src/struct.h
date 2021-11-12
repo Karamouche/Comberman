@@ -1,5 +1,5 @@
 #ifndef __STRUCT__
-#define __STRUC__
+#define __STRUCT__
 
 typedef struct Joueur{
     int vie;
