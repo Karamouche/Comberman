@@ -380,7 +380,7 @@ void explosion(Joueur* joueur, Bomb* bomb, int** map, SDL_Rect* bricks){
                 map[x/CASESIZE + i][y/CASESIZE] = VIDE;
                 bRight = TRUE;
             }else if(map[x/CASESIZE + i][y/CASESIZE] == BLOC)
-                bRight = FALSE;
+                bRight = TRUE;
             if(map[x/CASESIZE - i][y/CASESIZE] == BRICK && !bLeft){
                 map[x/CASESIZE - i][y/CASESIZE] = VIDE;
                 bLeft = TRUE;
