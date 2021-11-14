@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
     beeTexture2 = loadImage("beeTexture2/bas0.bmp", renderer);
     if(beeTexture2 == NULL)
         goto Quit;
-    bombTexture = loadImage("bomb.bmp", renderer);
+    bombTexture = loadImage("bombTexture/0.bmp", renderer);
     if(bombTexture == NULL)
         goto Quit;
     menuTexture = loadImage("menu.bmp", renderer);
@@ -141,19 +141,19 @@ int main(int argc, char* argv[]){
                     break;
                 case SDLK_DOWN:
                     if(statut == INGAME)
-                        beemove(bee1, BAS, map, bomb1);
+                        beemove(bee1, BAS, map, bomb1, bomb2, JOUEUR1);
                     break;
                 case SDLK_UP:
                     if(statut == INGAME)
-                        beemove(bee1, HAUT, map, bomb1);
+                        beemove(bee1, HAUT, map, bomb1, bomb2, JOUEUR1);
                     break;
                 case SDLK_LEFT:
                     if(statut == INGAME)
-                        beemove(bee1, GAUCHE, map, bomb1);
+                        beemove(bee1, GAUCHE, map, bomb1, bomb2, JOUEUR1);
                     break;
                 case SDLK_RIGHT:
                     if(statut == INGAME)
-                        beemove(bee1, DROITE, map, bomb1);
+                        beemove(bee1, DROITE, map, bomb1, bomb2, JOUEUR1);
                     break;
                 case SDLK_e:
                     if(statut == INGAME){
@@ -166,19 +166,19 @@ int main(int argc, char* argv[]){
                     break;
                 case SDLK_s:
                     if(statut == INGAME)
-                        beemove(bee2, BAS, map, bomb2);
+                        beemove(bee2, BAS, map, bomb1, bomb2, JOUEUR2);
                     break;
                 case SDLK_z:
                     if(statut == INGAME)
-                        beemove(bee2, HAUT, map, bomb2);
+                        beemove(bee2, HAUT, map, bomb1, bomb2, JOUEUR2);
                     break;
                 case SDLK_q:
                     if(statut == INGAME)
-                        beemove(bee2, GAUCHE, map, bomb2);
+                        beemove(bee2, GAUCHE, map, bomb1, bomb2, JOUEUR2);
                     break;
                 case SDLK_d:
                     if(statut == INGAME)
-                        beemove(bee2, DROITE, map, bomb2);
+                        beemove(bee2, DROITE, map, bomb1, bomb2, JOUEUR2);
                     break;
                 }break;
 
@@ -193,17 +193,39 @@ int main(int argc, char* argv[]){
         }
         if(statut == INGAME && bomb1->shown){
             bomb1->frame++;
+            if(bomb1->frame == 10)
+                bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
+            if(bomb1->frame == 20)
+                bomb1->texture = loadImage("bombTexture/2.bmp", renderer);
+            if(bomb1->frame == 30)
+                bomb1->texture = loadImage("bombTexture/3.bmp", renderer);
+            if(bomb1->frame == 40)
+                bomb1->texture = loadImage("bombTexture/4.bmp", renderer);
+            if(bomb1->frame == 50)
+                bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
                 explosion(bee1, bomb1, map, bricks);
+                bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
         if(statut == INGAME && bomb2->shown){
             bomb2->frame++;
+            if(bomb2->frame == 10)
+                bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
+            if(bomb2->frame == 20)
+                bomb2->texture = loadImage("bombTexture/2.bmp", renderer);
+            if(bomb2->frame == 30)
+                bomb2->texture = loadImage("bombTexture/3.bmp", renderer);
+            if(bomb2->frame == 40)
+                bomb2->texture = loadImage("bombTexture/4.bmp", renderer);
+            if(bomb2->frame == 50)
+                bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
                 explosion(bee2, bomb2, map, bricks);
+                bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
-        render(bee1, bee2, textures, bomb1, renderer, map, bricks, statut);
+        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut);
         SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
@@ -291,10 +313,10 @@ void init_map(int** map, SDL_Rect* bricks){
         map[i][j] = BRICK;
     }
     map[1][1] = JOUEUR1;
-    map[2][1] = JOUEUR1;
+    map[13][13] = JOUEUR2;
 }
 
-void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut){
+void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut){
     if(statut == MENU){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, textures.menu, NULL, NULL);
@@ -315,8 +337,10 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb, SDL
                 }
             }
         }
-        if(bomb->shown)
-            SDL_RenderCopy(renderer, bomb->texture, NULL, &bomb->rect);
+        if(bomb1->shown)
+            SDL_RenderCopy(renderer, bomb1->texture, NULL, &bomb1->rect);
+        if(bomb2->shown)
+            SDL_RenderCopy(renderer, bomb2->texture, NULL, &bomb2->rect);
         SDL_RenderCopy(renderer, joueur1->texture, NULL, &joueur1->rect);
         SDL_RenderCopy(renderer, joueur2->texture, NULL, &joueur2->rect);
         SDL_RenderPresent(renderer);
@@ -403,26 +427,29 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
     return texture;
 }
 
-void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb){
+void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int num){
     switch(DIR){
     case HAUT:
         if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BLOC &&
-           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BRICK){
-            if(!bomb->shown || bomb->rect.x != joueur->rect.x || bomb->rect.y != joueur->rect.y - CASESIZE){
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != BRICK &&
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != JOUEUR1 &&
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] != JOUEUR2){
+            if((!bomb1->shown || bomb1->rect.x != joueur->rect.x || bomb1->rect.y != joueur->rect.y - CASESIZE) && (!bomb2->shown || bomb2->rect.x != joueur->rect.x || bomb2->rect.y != joueur->rect.y - CASESIZE)){
                 map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
-                map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] = JOUEUR1;
+                map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE - 1] = num;
                 joueur->rect.y -= CASESIZE;
                }
-
         }
         joueur->position = HAUT;
         break;
     case BAS:
         if(map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BLOC &&
-           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BRICK){
-            if(!bomb->shown || bomb->rect.x != joueur->rect.x || bomb->rect.y != joueur->rect.y + CASESIZE){
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != BRICK &&
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != JOUEUR1 &&
+           map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] != JOUEUR2){
+            if((!bomb1->shown || bomb1->rect.x != joueur->rect.x || bomb1->rect.y != joueur->rect.y + CASESIZE) && (!bomb2->shown || bomb2->rect.x != joueur->rect.x || bomb2->rect.y != joueur->rect.y + CASESIZE)){
                 map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
-                map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] = JOUEUR1;
+                map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE + 1] = num;
                 joueur->rect.y += CASESIZE;
             }
         }
@@ -430,10 +457,12 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb){
         break;
     case DROITE:
         if(map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BLOC &&
-           map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BRICK){
-            if(!bomb->shown || bomb->rect.x != joueur->rect.x + CASESIZE || bomb->rect.y != joueur->rect.y){
+           map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != BRICK &&
+           map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != JOUEUR1 &&
+           map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] != JOUEUR2){
+            if((!bomb1->shown || bomb1->rect.x != joueur->rect.x + CASESIZE || bomb1->rect.y != joueur->rect.y) && (!bomb2->shown || bomb2->rect.x != joueur->rect.x + CASESIZE || bomb2->rect.y != joueur->rect.y)){
                 map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
-                map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] = JOUEUR1;
+                map[joueur->rect.x/CASESIZE + 1][joueur->rect.y/CASESIZE] = num;
                 joueur->rect.x += CASESIZE;
             }
         }
@@ -441,10 +470,12 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb){
         break;
     case GAUCHE:
         if(map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BLOC &&
-           map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BRICK){
-            if(!bomb->shown || bomb->rect.x != joueur->rect.x - CASESIZE || bomb->rect.y != joueur->rect.y){
+           map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != BRICK &&
+           map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != JOUEUR1 &&
+           map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] != JOUEUR2){
+            if((!bomb1->shown || bomb1->rect.x != joueur->rect.x - CASESIZE || bomb1->rect.y != joueur->rect.y) && (!bomb2->shown || bomb2->rect.x != joueur->rect.x - CASESIZE || bomb2->rect.y != joueur->rect.y)) {
                 map[joueur->rect.x/CASESIZE][joueur->rect.y/CASESIZE] = VIDE;
-                map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] = JOUEUR1;
+                map[joueur->rect.x/CASESIZE - 1][joueur->rect.y/CASESIZE] = num;
                 joueur->rect.x -= CASESIZE;
             }
         }
