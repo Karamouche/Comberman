@@ -46,6 +46,7 @@ int main(int argc, char* argv[]){
     bee1->frame = 0;
     bee1->UP = FALSE;
     bee1->blinking = FALSE;
+    bee1->vie = 3;
 
     Joueur* bee2 = malloc(sizeof(Joueur));
     bee2->rect.h = CASESIZE;
@@ -55,6 +56,7 @@ int main(int argc, char* argv[]){
     bee2->frame = 0;
     bee2->UP = FALSE;
     bee2->blinking = FALSE;
+    bee2->vie = 3;
 
 
     int exit = EXIT_FAILURE;
@@ -204,7 +206,7 @@ int main(int argc, char* argv[]){
             if(bomb1->frame == 50)
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
-                explosion(bee1, bomb1, map, bricks);
+                explosion(bee1,bee2, bomb1, map, bricks);
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -221,7 +223,7 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == 50)
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
-                explosion(bee2, bomb2, map, bricks);
+                explosion(bee1,bee2, bomb2, map, bricks);
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -484,7 +486,7 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int n
     }
 }
 
-void explosion(Joueur* joueur, Bomb* bomb, int** map, SDL_Rect* bricks){
+void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect* bricks){
     int x = bomb->rect.x;
     int y = bomb->rect.y;
     bomb->frame = 0;
@@ -501,21 +503,37 @@ void explosion(Joueur* joueur, Bomb* bomb, int** map, SDL_Rect* bricks){
                 bBot = TRUE;
             }else if(map[x/CASESIZE][y/CASESIZE + i] == BLOC)
                 bBot = TRUE;
+             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR1)
+                joueur1->vie--;
+             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR2)
+                joueur2->vie--;
             if(map[x/CASESIZE][y/CASESIZE - i] == BRICK && !bTop){
                 map[x/CASESIZE][y/CASESIZE - i] = VIDE;
                 bTop = TRUE;
             }else if(map[x/CASESIZE][y/CASESIZE - i] == BLOC)
                 bTop = TRUE;
+             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR1)
+                joueur1->vie--;
+             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR2)
+                joueur2->vie--;
             if(map[x/CASESIZE + i][y/CASESIZE] == BRICK && !bRight){
                 map[x/CASESIZE + i][y/CASESIZE] = VIDE;
                 bRight = TRUE;
             }else if(map[x/CASESIZE + i][y/CASESIZE] == BLOC)
                 bRight = TRUE;
+             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR1)
+                joueur1->vie--;
+             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR2)
+                joueur2->vie--;
             if(map[x/CASESIZE - i][y/CASESIZE] == BRICK && !bLeft){
                 map[x/CASESIZE - i][y/CASESIZE] = VIDE;
                 bLeft = TRUE;
             }else if(map[x/CASESIZE - i][y/CASESIZE] == BLOC)
                 bLeft = TRUE;
+             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR1)
+                joueur1->vie--;
+             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR2)
+                joueur2->vie--;
         }
     }
 }
