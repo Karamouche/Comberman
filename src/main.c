@@ -193,6 +193,10 @@ int main(int argc, char* argv[]){
             bee1->frame++;
             bee2->frame++;
         }
+
+        if(statut == INGAME && (bee1->vie == 0 || bee2->vie == 0)){
+            LOOP=FALSE;
+        }
         if(statut == INGAME && bomb1->shown){
             bomb1->frame++;
             if(bomb1->frame == 10)
