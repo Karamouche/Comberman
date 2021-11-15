@@ -502,7 +502,7 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect*
     int bLeft = FALSE;
     int bRight = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
-            //RAJOUTER LES DEGATS SUR LES JOUEURS
+            //MODIFIER LA CONDITION CAR BUG
         if(x/CASESIZE + i<15 && x/CASESIZE - i>=0 && y/CASESIZE + i<15 && y/CASESIZE - i >= 0){
             if(map[x/CASESIZE][y/CASESIZE + i] == BRICK && !bBot){
                 map[x/CASESIZE][y/CASESIZE + i] = VIDE;
