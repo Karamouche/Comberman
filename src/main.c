@@ -126,62 +126,64 @@ int main(int argc, char* argv[]){
         while(SDL_PollEvent(&event)){
             switch(event.type){
             case SDL_KEYDOWN:
-                switch(event.key.keysym.sym){
-                case SDLK_SPACE:
-                    if(statut == MENU)
-                        statut = INGAME;
-                    else if(statut == INGAME){
-                        if(bomb1->shown == FALSE){
-                            bomb1->rect.x = bee1->rect.x;
-                            bomb1->rect.y = bee1->rect.y;
-                            bomb1->shown = TRUE;
+                if(event.key.repeat == 0){
+                    switch(event.key.keysym.sym){
+                    case SDLK_SPACE:
+                        if(statut == MENU)
+                            statut = INGAME;
+                        else if(statut == INGAME){
+                            if(bomb1->shown == FALSE){
+                                bomb1->rect.x = bee1->rect.x;
+                                bomb1->rect.y = bee1->rect.y;
+                                bomb1->shown = TRUE;
+                            }
                         }
-                    }
-                    break;
-                case SDLK_ESCAPE:
-                    LOOP = FALSE;
-                    break;
-                case SDLK_DOWN:
-                    if(statut == INGAME)
-                        beemove(bee1, BAS, map, bomb1, bomb2, JOUEUR1);
-                    break;
-                case SDLK_UP:
-                    if(statut == INGAME)
-                        beemove(bee1, HAUT, map, bomb1, bomb2, JOUEUR1);
-                    break;
-                case SDLK_LEFT:
-                    if(statut == INGAME)
-                        beemove(bee1, GAUCHE, map, bomb1, bomb2, JOUEUR1);
-                    break;
-                case SDLK_RIGHT:
-                    if(statut == INGAME)
-                        beemove(bee1, DROITE, map, bomb1, bomb2, JOUEUR1);
-                    break;
-                case SDLK_e:
-                    if(statut == INGAME){
-                        if(bomb2->shown == FALSE){
-                            bomb2->rect.x = bee2->rect.x;
-                            bomb2->rect.y = bee2->rect.y;
-                            bomb2->shown = TRUE;
+                        break;
+                    case SDLK_ESCAPE:
+                        LOOP = FALSE;
+                        break;
+                    case SDLK_DOWN:
+                        if(statut == INGAME)
+                            beemove(bee1, BAS, map, bomb1, bomb2, JOUEUR1);
+                        break;
+                    case SDLK_UP:
+                        if(statut == INGAME)
+                            beemove(bee1, HAUT, map, bomb1, bomb2, JOUEUR1);
+                        break;
+                    case SDLK_LEFT:
+                        if(statut == INGAME)
+                            beemove(bee1, GAUCHE, map, bomb1, bomb2, JOUEUR1);
+                        break;
+                    case SDLK_RIGHT:
+                        if(statut == INGAME)
+                            beemove(bee1, DROITE, map, bomb1, bomb2, JOUEUR1);
+                        break;
+                    case SDLK_e:
+                        if(statut == INGAME){
+                            if(bomb2->shown == FALSE){
+                                bomb2->rect.x = bee2->rect.x;
+                                bomb2->rect.y = bee2->rect.y;
+                                bomb2->shown = TRUE;
+                            }
                         }
-                    }
-                    break;
-                case SDLK_s:
-                    if(statut == INGAME)
-                        beemove(bee2, BAS, map, bomb1, bomb2, JOUEUR2);
-                    break;
-                case SDLK_z:
-                    if(statut == INGAME)
-                        beemove(bee2, HAUT, map, bomb1, bomb2, JOUEUR2);
-                    break;
-                case SDLK_q:
-                    if(statut == INGAME)
-                        beemove(bee2, GAUCHE, map, bomb1, bomb2, JOUEUR2);
-                    break;
-                case SDLK_d:
-                    if(statut == INGAME)
-                        beemove(bee2, DROITE, map, bomb1, bomb2, JOUEUR2);
-                    break;
+                        break;
+                    case SDLK_s:
+                        if(statut == INGAME)
+                            beemove(bee2, BAS, map, bomb1, bomb2, JOUEUR2);
+                        break;
+                    case SDLK_z:
+                        if(statut == INGAME)
+                            beemove(bee2, HAUT, map, bomb1, bomb2, JOUEUR2);
+                        break;
+                    case SDLK_q:
+                        if(statut == INGAME)
+                            beemove(bee2, GAUCHE, map, bomb1, bomb2, JOUEUR2);
+                        break;
+                    case SDLK_d:
+                        if(statut == INGAME)
+                            beemove(bee2, DROITE, map, bomb1, bomb2, JOUEUR2);
+                        break;
+                }
                 }break;
 
             case SDL_QUIT:
