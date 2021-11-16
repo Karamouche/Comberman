@@ -19,6 +19,12 @@ typedef struct Bomb{
     int frame;
 }Bomb;
 
+typedef struct Coeur{
+    int shown;
+    SDL_Rect rect;
+    SDL_Texture* texture;
+    int frame; // pour faire bouger les coeurs, un peu comme l'abeille
+}Coeur;
 typedef struct Textures{
     SDL_Texture* menu;
     SDL_Texture* background;

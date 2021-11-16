@@ -36,6 +36,7 @@ int main(int argc, char* argv[]){
     SDL_Texture *bombTexture = NULL;
     SDL_Texture *menuTexture = NULL;
     SDL_Texture *brickTexture = NULL;
+    SDL_Texture *coeurTexture = NULL;
     SDL_Event event;
 
     Joueur* bee1 = malloc(sizeof(Joueur));
@@ -57,6 +58,48 @@ int main(int argc, char* argv[]){
     bee2->UP = FALSE;
     bee2->blinking = FALSE;
     bee2->vie = 3;
+
+    Coeur* vie11 = malloc(sizeof(Coeur));
+    vie11->rect.h = CASESIZE;
+    vie11->rect.w = CASESIZE;
+    vie11->rect.x = 0;
+    vie11->rect.y = 560;
+    vie11->frame = 0;
+
+    Coeur* vie12 = malloc(sizeof(Coeur));
+    vie12->rect.h = CASESIZE;
+    vie12->rect.w = CASESIZE;
+    vie12->rect.x = 40;
+    vie12->rect.y = 560;
+    vie12->frame = 0;
+
+    Coeur* vie13 = malloc(sizeof(Coeur));
+    vie13->rect.h = CASESIZE;
+    vie13->rect.w = CASESIZE;
+    vie13->rect.x = 80;
+    vie13->rect.y = 560;
+    vie13->frame = 0;
+
+    Coeur* vie21 = malloc(sizeof(Coeur));
+    vie21->rect.h = CASESIZE;
+    vie21->rect.w = CASESIZE;
+    vie21->rect.x = 560;
+    vie21->rect.y = 560;
+    vie21->frame = 0;
+
+    Coeur* vie22 = malloc(sizeof(Coeur));
+    vie22->rect.h = CASESIZE;
+    vie22->rect.w = CASESIZE;
+    vie22->rect.x = 520;
+    vie22->rect.y = 560;
+    vie22->frame = 0;
+
+    Coeur* vie23 = malloc(sizeof(Coeur));
+    vie23->rect.h = CASESIZE;
+    vie23->rect.w = CASESIZE;
+    vie23->rect.x = 480;
+    vie23->rect.y = 560;
+    vie23->frame = 0;
 
 
     int exit = EXIT_FAILURE;
@@ -84,11 +127,14 @@ int main(int argc, char* argv[]){
     brickTexture = loadImage("brick.bmp", renderer);
     if(brickTexture == NULL)
         goto Quit;
-
+    coeurTexture = loadImage("coeur.bmp", renderer);
+    if(coeurTexture == NULL)
+        goto Quit;
     Textures textures;
     textures.background = background;
     textures.menu = menuTexture;
     textures.brick = brickTexture;
+
 
 
     bee1->position = BAS;
@@ -115,10 +161,23 @@ int main(int argc, char* argv[]){
     bomb2->rect.h = 40;
     bomb2->rect.w = 40;
 
+    vie11->texture = coeurTexture;
+    vie12->texture = coeurTexture;
+    vie13->texture = coeurTexture;
+    vie21->texture = coeurTexture;
+    vie22->texture = coeurTexture;
+    vie23->texture = coeurTexture;
+
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, background, NULL, NULL); // Affiche ma texture sur touts l'écran
     SDL_RenderCopy(renderer, bee1->texture, NULL, &bee1->rect);
     SDL_RenderCopy(renderer, bee2->texture, NULL, &bee2->rect);
+    SDL_RenderCopy(renderer, vie11->texture, NULL, &vie11->rect);
+    SDL_RenderCopy(renderer, vie12->texture, NULL, &vie12->rect);
+    SDL_RenderCopy(renderer, vie13->texture, NULL, &vie13->rect);
+    SDL_RenderCopy(renderer, vie21->texture, NULL, &vie21->rect);
+    SDL_RenderCopy(renderer, vie22->texture, NULL, &vie22->rect);
+    SDL_RenderCopy(renderer, vie23->texture, NULL, &vie23->rect);
     SDL_RenderPresent(renderer);
 
     int LOOP = TRUE;
@@ -233,7 +292,39 @@ int main(int argc, char* argv[]){
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
-        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut);
+        if(statut == INGAME && bee1->vie == 1){
+            vie11->shown = TRUE;
+            vie12->shown = FALSE;
+            vie13->shown = FALSE;
+        }
+        if(statut == INGAME && bee1->vie == 2){
+            vie11->shown = TRUE;
+            vie12->shown = TRUE;
+            vie13->shown = FALSE;
+        }
+
+        if(statut == INGAME && bee1->vie == 3){
+            vie11->shown = TRUE;
+            vie12->shown = TRUE;
+            vie13->shown = TRUE;
+        }
+        if(statut == INGAME && bee2->vie == 1){
+            vie21->shown = TRUE;
+            vie22->shown = FALSE;
+            vie23->shown = FALSE;
+        }
+        if(statut == INGAME && bee2->vie == 2){
+            vie21->shown = TRUE;
+            vie22->shown = TRUE;
+            vie23->shown = FALSE;
+        }
+
+        if(statut == INGAME && bee2->vie == 3){
+            vie21->shown = TRUE;
+            vie22->shown = TRUE;
+            vie23->shown = TRUE;
+        }
+        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut, vie11, vie12, vie13, vie21, vie22, vie23);
         SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
@@ -253,6 +344,8 @@ Quit://TO QUIT
         SDL_DestroyTexture(menuTexture);
     if(brickTexture != NULL)
         SDL_DestroyTexture(brickTexture);
+    if(coeurTexture != NULL)
+        SDL_DestroyTexture(coeurTexture);
     if(renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if(window != NULL)
@@ -265,6 +358,12 @@ Quit://TO QUIT
     free(bricks);
     free(bomb1);
     free(bomb2);
+    free(vie11);
+    free(vie12);
+    free(vie13);
+    free(vie21);
+    free(vie22);
+    free(vie23);
     //free(map);
     SDL_Quit();
     return exit;
@@ -273,7 +372,7 @@ Quit://TO QUIT
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 {
-    if(0 != SDL_Init(SDL_INIT_VIDEO))
+    if(0 != SDL_Init(SDL_INIT_VIDEO || SDL_INIT_AUDIO))
     {
         fprintf(stderr, "Erreur SDL_Init : %s",
         SDL_GetError());
@@ -324,7 +423,7 @@ void init_map(int** map, SDL_Rect* bricks){
     map[13][13] = JOUEUR2;
 }
 
-void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut){
+void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut,Coeur* vie11,Coeur* vie12,Coeur* vie13,Coeur* vie21,Coeur* vie22,Coeur* vie23){
     if(statut == MENU){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, textures.menu, NULL, NULL);
@@ -332,6 +431,7 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bo
     }else if(statut == INGAME){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, textures.background, NULL, NULL);
+
         animateBee(renderer, joueur1, 1);
         animateBee(renderer, joueur2, 2);
         int b = 0;
@@ -349,9 +449,24 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bo
             SDL_RenderCopy(renderer, bomb1->texture, NULL, &bomb1->rect);
         if(bomb2->shown)
             SDL_RenderCopy(renderer, bomb2->texture, NULL, &bomb2->rect);
+
+        if(vie11->shown)
+            SDL_RenderCopy(renderer, vie11->texture, NULL, &vie11->rect);
+        if(vie12->shown)
+            SDL_RenderCopy(renderer, vie12->texture, NULL, &vie12->rect);
+        if(vie13->shown)
+            SDL_RenderCopy(renderer, vie13->texture, NULL, &vie13->rect);
+        if(vie21->shown)
+            SDL_RenderCopy(renderer, vie21->texture, NULL, &vie21->rect);
+        if(vie22->shown)
+            SDL_RenderCopy(renderer, vie22->texture, NULL, &vie22->rect);
+        if(vie23->shown)
+            SDL_RenderCopy(renderer, vie23->texture, NULL, &vie23->rect);
+
         SDL_RenderCopy(renderer, joueur1->texture, NULL, &joueur1->rect);
         SDL_RenderCopy(renderer, joueur2->texture, NULL, &joueur2->rect);
         SDL_RenderPresent(renderer);
+
     }
 }
 
