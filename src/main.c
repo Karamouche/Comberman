@@ -37,6 +37,8 @@ int main(int argc, char* argv[]){
     SDL_Texture *menuTexture = NULL;
     SDL_Texture *brickTexture = NULL;
     SDL_Texture *coeurTexture = NULL;
+    SDL_Texture *expVertical = NULL;
+    SDL_Texture *expHorizontal = NULL;
     SDL_Event event;
 
     Joueur* bee1 = malloc(sizeof(Joueur));
@@ -137,10 +139,15 @@ int main(int argc, char* argv[]){
     coeurTexture = loadImage("coeur.bmp", renderer);
     if(coeurTexture == NULL)
         goto Quit;
+
+    expHorizontal = loadImage("flams/hori.bmp", renderer);
+    expVertical = loadImage("flams/vert.bmp", renderer);
     Textures textures;
     textures.background = background;
     textures.menu = menuTexture;
     textures.brick = brickTexture;
+    textures.expHorizontal = expHorizontal;
+    textures.expVertical = expVertical;
 
     bee1->position = BAS;
     bee1->vie = 3;
@@ -343,7 +350,7 @@ int main(int argc, char* argv[]){
             coeurs2->coeur2->shown = TRUE;
             coeurs2->coeur3->shown = TRUE;
         }
-        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut, coeurs1, coeurs2, flams1, flams2);
+        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut, coeurs1, coeurs2);
         SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
@@ -450,7 +457,7 @@ void init_map(int** map, SDL_Rect* bricks){
     map[13][13] = JOUEUR2;
 }
 
-void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut, Coeurs* coeurs1, Coeurs* coeurs2, Flams* flams1, Flams* flams2){
+void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut, Coeurs* coeurs1, Coeurs* coeurs2){
     if(statut == MENU){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, textures.menu, NULL, NULL);
@@ -489,25 +496,52 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bo
             SDL_RenderCopy(renderer, coeurs2->coeur2->texture, NULL, &coeurs2->coeur2->rect);
         if(coeurs2->coeur3->shown)
             SDL_RenderCopy(renderer, coeurs2->coeur3->texture, NULL, &coeurs2->coeur3->rect);
-        if(flams1->shown){
-            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->b1);
-            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->b2);
-            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->h1);
-            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->h2);
-            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->g1);
-            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->g2);
-            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->d1);
-            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->d2);
+        if(bomb1->flams->shown){
+            if(isMapped(bomb1->flams->b1.x/CASESIZE, bomb1->flams->b1.y/CASESIZE))
+                if(map[bomb1->flams->b1.x/CASESIZE][bomb1->flams->b1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b1);
+                    if(isMapped(bomb1->flams->b2.x/CASESIZE, bomb1->flams->b2.y/CASESIZE))
+                        if(map[bomb1->flams->b2.x/CASESIZE][bomb1->flams->b2.y/CASESIZE] == BRICK || map[bomb1->flams->b2.x/CASESIZE][bomb1->flams->b2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b2);
+            }else if(map[bomb1->flams->b1.x/CASESIZE][bomb1->flams->b1.y/CASESIZE] == BRICK)
+                SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b1);
+
+            if(isMapped(bomb1->flams->h1.x/CASESIZE, bomb1->flams->h1.y/CASESIZE))
+                if(map[bomb1->flams->h1.x/CASESIZE][bomb1->flams->h1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h1);
+                    if(isMapped(bomb1->flams->h2.x/CASESIZE, bomb1->flams->h2.y/CASESIZE))
+                        if(map[bomb1->flams->h2.x/CASESIZE][bomb1->flams->h2.y/CASESIZE] == BRICK || map[bomb1->flams->h2.x/CASESIZE][bomb1->flams->h2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h2);
+            }else if(map[bomb1->flams->h1.x/CASESIZE][bomb1->flams->h1.y/CASESIZE] == BRICK)
+                SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h1);
+
+            if(isMapped(bomb1->flams->g1.x/CASESIZE, bomb1->flams->g1.y/CASESIZE))
+                if(map[bomb1->flams->g1.x/CASESIZE][bomb1->flams->g1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g1);
+                    if(isMapped(bomb1->flams->g2.x/CASESIZE, bomb1->flams->g2.y/CASESIZE))
+                        if(map[bomb1->flams->g2.x/CASESIZE][bomb1->flams->g2.y/CASESIZE] == BRICK || map[bomb1->flams->g2.x/CASESIZE][bomb1->flams->g2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g2);
+            }else if(map[bomb1->flams->g1.x/CASESIZE][bomb1->flams->g1.y/CASESIZE] == BRICK)
+                SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g1);
+
+            if(isMapped(bomb1->flams->d1.x/CASESIZE, bomb1->flams->d1.y/CASESIZE))
+                if(map[bomb1->flams->d1.x/CASESIZE][bomb1->flams->d1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d1);
+                    if(isMapped(bomb1->flams->d2.x/CASESIZE, bomb1->flams->d2.y/CASESIZE))
+                        if(map[bomb1->flams->d2.x/CASESIZE][bomb1->flams->d2.y/CASESIZE] == BRICK || map[bomb1->flams->d2.x/CASESIZE][bomb1->flams->d2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d2);
+            }else if(map[bomb1->flams->d1.x/CASESIZE][bomb1->flams->d1.y/CASESIZE] == BRICK)
+                SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d1);
         }
-        if(flams2->shown){
-            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->b1);
-            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->b2);
-            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->h1);
-            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->h2);
-            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->g1);
-            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->g2);
-            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->d1);
-            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->d2);
+        if(bomb2->flams->shown){
+            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b1);
+            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b2);
+            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h1);
+            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h2);
+            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g1);
+            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g2);
+            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d1);
+            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d2);
         }
 
         SDL_RenderCopy(renderer, joueur1->texture, NULL, &joueur1->rect);
@@ -665,8 +699,8 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** 
     int bRight = FALSE;
     flams->shown = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
-            //MODIFIER LA CONDITION CAR BUG
-        if(x/CASESIZE + i<15 && x/CASESIZE - i>=0 && y/CASESIZE + i<15 && y/CASESIZE - i >= 0){
+        //MODIFIER LA CONDITION CAR BUG
+        if(isMapped(x/CASESIZE, y/CASESIZE + i)){
             if(map[x/CASESIZE][y/CASESIZE + i] == BRICK && !bBot){
                 map[x/CASESIZE][y/CASESIZE + i] = VIDE;
                 bBot = TRUE;
@@ -676,6 +710,8 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** 
                 joueur1->vie--;
              else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR2)
                 joueur2->vie--;
+        }
+        if(isMapped(x/CASESIZE, y/CASESIZE - i)){
             if(map[x/CASESIZE][y/CASESIZE - i] == BRICK && !bTop){
                 map[x/CASESIZE][y/CASESIZE - i] = VIDE;
                 bTop = TRUE;
@@ -685,6 +721,8 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** 
                 joueur1->vie--;
              else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR2)
                 joueur2->vie--;
+        }
+        if(isMapped(x/CASESIZE + i, y/CASESIZE)){
             if(map[x/CASESIZE + i][y/CASESIZE] == BRICK && !bRight){
                 map[x/CASESIZE + i][y/CASESIZE] = VIDE;
                 bRight = TRUE;
@@ -694,6 +732,8 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** 
                 joueur1->vie--;
              else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR2)
                 joueur2->vie--;
+        }
+        if(isMapped(x/CASESIZE - i, y/CASESIZE)){
             if(map[x/CASESIZE - i][y/CASESIZE] == BRICK && !bLeft){
                 map[x/CASESIZE - i][y/CASESIZE] = VIDE;
                 bLeft = TRUE;
@@ -709,8 +749,6 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** 
 
 Flams* createFlams(SDL_Renderer* renderer){
     Flams* flams = malloc(sizeof(Flams));
-    flams->horizontal = loadImage("flams/hori.bmp", renderer);
-    flams->vertical = loadImage("flams/vert.bmp", renderer);
     //HAUTEUR
     flams->b1.h = CASESIZE;
     flams->b2.h = CASESIZE;
@@ -756,7 +794,11 @@ void setCoordFlams(Flams* flams, int x, int y){
     flams->d2.y = y;
 }
 
-
+int isMapped(int x, int y){
+    if(x>=0 && x<15 && y>=0 && y<15)
+        return TRUE;
+    return FALSE;
+}
 
 
 

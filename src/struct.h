@@ -14,8 +14,6 @@ typedef struct Joueur{
 
 typedef struct Flams{
     int shown;
-    SDL_Texture* horizontal;
-    SDL_Texture* vertical;
     SDL_Rect g1;
     SDL_Rect g2;
     SDL_Rect d1;
@@ -50,6 +48,8 @@ typedef struct Textures{
     SDL_Texture* menu;
     SDL_Texture* background;
     SDL_Texture* brick;
+    SDL_Texture* expHorizontal;
+    SDL_Texture* expVertical;
 }Textures;
 
 #endif
