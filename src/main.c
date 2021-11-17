@@ -497,51 +497,86 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bo
         if(coeurs2->coeur3->shown)
             SDL_RenderCopy(renderer, coeurs2->coeur3->texture, NULL, &coeurs2->coeur3->rect);
         if(bomb1->flams->shown){
-            if(isMapped(bomb1->flams->b1.x/CASESIZE, bomb1->flams->b1.y/CASESIZE))
+            if(isMapped(bomb1->flams->b1.x/CASESIZE, bomb1->flams->b1.y/CASESIZE)){
                 if(map[bomb1->flams->b1.x/CASESIZE][bomb1->flams->b1.y/CASESIZE] == VIDE){
                     SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b1);
                     if(isMapped(bomb1->flams->b2.x/CASESIZE, bomb1->flams->b2.y/CASESIZE))
                         if(map[bomb1->flams->b2.x/CASESIZE][bomb1->flams->b2.y/CASESIZE] == BRICK || map[bomb1->flams->b2.x/CASESIZE][bomb1->flams->b2.y/CASESIZE] == VIDE)
                             SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b2);
-            }else if(map[bomb1->flams->b1.x/CASESIZE][bomb1->flams->b1.y/CASESIZE] == BRICK)
-                SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b1);
+                }else if(map[bomb1->flams->b1.x/CASESIZE][bomb1->flams->b1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->b1);
+            }
 
-            if(isMapped(bomb1->flams->h1.x/CASESIZE, bomb1->flams->h1.y/CASESIZE))
+            if(isMapped(bomb1->flams->h1.x/CASESIZE, bomb1->flams->h1.y/CASESIZE)){
                 if(map[bomb1->flams->h1.x/CASESIZE][bomb1->flams->h1.y/CASESIZE] == VIDE){
                     SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h1);
                     if(isMapped(bomb1->flams->h2.x/CASESIZE, bomb1->flams->h2.y/CASESIZE))
                         if(map[bomb1->flams->h2.x/CASESIZE][bomb1->flams->h2.y/CASESIZE] == BRICK || map[bomb1->flams->h2.x/CASESIZE][bomb1->flams->h2.y/CASESIZE] == VIDE)
                             SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h2);
-            }else if(map[bomb1->flams->h1.x/CASESIZE][bomb1->flams->h1.y/CASESIZE] == BRICK)
-                SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h1);
+                }else if(map[bomb1->flams->h1.x/CASESIZE][bomb1->flams->h1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb1->flams->h1);
+            }
 
-            if(isMapped(bomb1->flams->g1.x/CASESIZE, bomb1->flams->g1.y/CASESIZE))
+            if(isMapped(bomb1->flams->g1.x/CASESIZE, bomb1->flams->g1.y/CASESIZE)){
                 if(map[bomb1->flams->g1.x/CASESIZE][bomb1->flams->g1.y/CASESIZE] == VIDE){
                     SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g1);
                     if(isMapped(bomb1->flams->g2.x/CASESIZE, bomb1->flams->g2.y/CASESIZE))
                         if(map[bomb1->flams->g2.x/CASESIZE][bomb1->flams->g2.y/CASESIZE] == BRICK || map[bomb1->flams->g2.x/CASESIZE][bomb1->flams->g2.y/CASESIZE] == VIDE)
                             SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g2);
-            }else if(map[bomb1->flams->g1.x/CASESIZE][bomb1->flams->g1.y/CASESIZE] == BRICK)
-                SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g1);
+                }else if(map[bomb1->flams->g1.x/CASESIZE][bomb1->flams->g1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->g1);
+            }
 
-            if(isMapped(bomb1->flams->d1.x/CASESIZE, bomb1->flams->d1.y/CASESIZE))
+            if(isMapped(bomb1->flams->d1.x/CASESIZE, bomb1->flams->d1.y/CASESIZE)){
                 if(map[bomb1->flams->d1.x/CASESIZE][bomb1->flams->d1.y/CASESIZE] == VIDE){
                     SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d1);
                     if(isMapped(bomb1->flams->d2.x/CASESIZE, bomb1->flams->d2.y/CASESIZE))
                         if(map[bomb1->flams->d2.x/CASESIZE][bomb1->flams->d2.y/CASESIZE] == BRICK || map[bomb1->flams->d2.x/CASESIZE][bomb1->flams->d2.y/CASESIZE] == VIDE)
                             SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d2);
-            }else if(map[bomb1->flams->d1.x/CASESIZE][bomb1->flams->d1.y/CASESIZE] == BRICK)
-                SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d1);
+                }else if(map[bomb1->flams->d1.x/CASESIZE][bomb1->flams->d1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb1->flams->d1);
+            }
         }
         if(bomb2->flams->shown){
-            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b1);
-            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b2);
-            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h1);
-            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h2);
-            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g1);
-            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g2);
-            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d1);
-            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d2);
+            if(isMapped(bomb2->flams->b1.x/CASESIZE, bomb2->flams->b1.y/CASESIZE)){
+                if(map[bomb2->flams->b1.x/CASESIZE][bomb2->flams->b1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b1);
+                    if(isMapped(bomb2->flams->b2.x/CASESIZE, bomb2->flams->b2.y/CASESIZE))
+                        if(map[bomb2->flams->b2.x/CASESIZE][bomb2->flams->b2.y/CASESIZE] == BRICK || map[bomb2->flams->b2.x/CASESIZE][bomb2->flams->b2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b2);
+                }else if(map[bomb2->flams->b1.x/CASESIZE][bomb2->flams->b1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->b1);
+            }
+
+            if(isMapped(bomb2->flams->h1.x/CASESIZE, bomb2->flams->h1.y/CASESIZE)){
+                if(map[bomb2->flams->h1.x/CASESIZE][bomb2->flams->h1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h1);
+                    if(isMapped(bomb2->flams->h2.x/CASESIZE, bomb2->flams->h2.y/CASESIZE))
+                        if(map[bomb2->flams->h2.x/CASESIZE][bomb2->flams->h2.y/CASESIZE] == BRICK || map[bomb2->flams->h2.x/CASESIZE][bomb2->flams->h2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h2);
+                }else if(map[bomb2->flams->h1.x/CASESIZE][bomb2->flams->h1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expVertical, NULL, &bomb2->flams->h1);
+            }
+
+            if(isMapped(bomb2->flams->g1.x/CASESIZE, bomb2->flams->g1.y/CASESIZE)){
+                if(map[bomb2->flams->g1.x/CASESIZE][bomb2->flams->g1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g1);
+                    if(isMapped(bomb2->flams->g2.x/CASESIZE, bomb2->flams->g2.y/CASESIZE))
+                        if(map[bomb2->flams->g2.x/CASESIZE][bomb2->flams->g2.y/CASESIZE] == BRICK || map[bomb2->flams->g2.x/CASESIZE][bomb2->flams->g2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g2);
+                }else if(map[bomb2->flams->g1.x/CASESIZE][bomb2->flams->g1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->g1);
+            }
+
+            if(isMapped(bomb2->flams->d1.x/CASESIZE, bomb2->flams->d1.y/CASESIZE)){
+                if(map[bomb2->flams->d1.x/CASESIZE][bomb2->flams->d1.y/CASESIZE] == VIDE){
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d1);
+                    if(isMapped(bomb2->flams->d2.x/CASESIZE, bomb2->flams->d2.y/CASESIZE))
+                        if(map[bomb2->flams->d2.x/CASESIZE][bomb2->flams->d2.y/CASESIZE] == BRICK || map[bomb2->flams->d2.x/CASESIZE][bomb2->flams->d2.y/CASESIZE] == VIDE)
+                            SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d2);
+                }else if(map[bomb2->flams->d1.x/CASESIZE][bomb2->flams->d1.y/CASESIZE] == BRICK)
+                    SDL_RenderCopy(renderer, textures.expHorizontal, NULL, &bomb2->flams->d1);
+            }
         }
 
         SDL_RenderCopy(renderer, joueur1->texture, NULL, &joueur1->rect);
