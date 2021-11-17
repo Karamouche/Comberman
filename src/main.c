@@ -746,10 +746,10 @@ void setCoordFlams(Flams* flams, int x, int y){
     flams->d1.x = x + CASESIZE;
     flams->d2.x = x + 2*CASESIZE;
     //Y
-    flams->b1.y = y - CASESIZE;
-    flams->b2.y = y - 2*CASESIZE;
-    flams->h1.y = y + CASESIZE;
-    flams->h2.y = y + 2*CASESIZE;
+    flams->b1.y = y + CASESIZE;
+    flams->b2.y = y + 2*CASESIZE;
+    flams->h1.y = y - CASESIZE;
+    flams->h2.y = y - 2*CASESIZE;
     flams->g1.y = y;
     flams->g2.y = y;
     flams->d1.y = y;
