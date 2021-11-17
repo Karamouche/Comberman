@@ -12,10 +12,25 @@ typedef struct Joueur{
     int blinking;
 }Joueur;
 
+typedef struct Flams{
+    int shown;
+    SDL_Texture* horizontal;
+    SDL_Texture* vertical;
+    SDL_Rect g1;
+    SDL_Rect g2;
+    SDL_Rect d1;
+    SDL_Rect d2;
+    SDL_Rect h1;
+    SDL_Rect h2;
+    SDL_Rect b1;
+    SDL_Rect b2;
+}Flams;
+
 typedef struct Bomb{
     int shown;
     SDL_Rect rect;
     SDL_Texture* texture;
+    Flams* flams;
     int frame;
 }Bomb;
 
@@ -23,8 +38,14 @@ typedef struct Coeur{
     int shown;
     SDL_Rect rect;
     SDL_Texture* texture;
-    int frame; // pour faire bouger les coeurs, un peu comme l'abeille
 }Coeur;
+
+typedef struct Coeurs{
+    Coeur* coeur1;
+    Coeur* coeur2;
+    Coeur* coeur3;
+}Coeurs;
+
 typedef struct Textures{
     SDL_Texture* menu;
     SDL_Texture* background;

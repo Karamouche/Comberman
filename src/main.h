@@ -8,22 +8,22 @@
 #define START2 520
 #define SIZE 15
 #define NBRICKS 40
-#define TPSEXPLOSION 60
+#define TPSEXPLOSION 45
 #define LENEXPLOSION 2
 
-//RAJOUTER UNE PROTECTION
-
-enum {HAUT, BAS, GAUCHE, DROITE};
-enum {MENU, INGAME, ENDGAME};
+enum{HAUT, BAS, GAUCHE, DROITE};
+enum{MENU, INGAME, ENDGAME};
 enum{VIDE, BLOC, BRICK, JOUEUR1, JOUEUR2};
 
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h);
 SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 void beemove(Joueur* joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int num);
-void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut,Coeur* vie11,Coeur* vie12,Coeur* vie13,Coeur* vie21,Coeur* vie22,Coeur* vie23);
+void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut,Coeurs* coeurs1, Coeurs* coeurs2, Flams* flams1, Flams* flams2);
 void init_map(int** map, SDL_Rect* bricks);
-void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect* bricks);
+void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks);
 void animateBee(SDL_Renderer* renderer, Joueur* joueur, int beeN);
+Flams* createFlams(SDL_Renderer* renderer);
+void setCoordFlams(Flams* flams, int x, int y);
 
 #endif

@@ -63,43 +63,50 @@ int main(int argc, char* argv[]){
     vie11->rect.h = CASESIZE;
     vie11->rect.w = CASESIZE;
     vie11->rect.x = 0;
-    vie11->rect.y = 560;
-    vie11->frame = 0;
+    vie11->rect.y = 0;
 
     Coeur* vie12 = malloc(sizeof(Coeur));
     vie12->rect.h = CASESIZE;
     vie12->rect.w = CASESIZE;
     vie12->rect.x = 40;
-    vie12->rect.y = 560;
-    vie12->frame = 0;
+    vie12->rect.y = 0;
 
     Coeur* vie13 = malloc(sizeof(Coeur));
     vie13->rect.h = CASESIZE;
     vie13->rect.w = CASESIZE;
     vie13->rect.x = 80;
-    vie13->rect.y = 560;
-    vie13->frame = 0;
+    vie13->rect.y = 0;
+
+    Coeurs* coeurs1 = malloc(sizeof(Coeurs));
+    coeurs1->coeur1 = vie11;
+    coeurs1->coeur2 = vie12;
+    coeurs1->coeur3 = vie13;
 
     Coeur* vie21 = malloc(sizeof(Coeur));
     vie21->rect.h = CASESIZE;
     vie21->rect.w = CASESIZE;
     vie21->rect.x = 560;
     vie21->rect.y = 560;
-    vie21->frame = 0;
 
     Coeur* vie22 = malloc(sizeof(Coeur));
     vie22->rect.h = CASESIZE;
     vie22->rect.w = CASESIZE;
     vie22->rect.x = 520;
     vie22->rect.y = 560;
-    vie22->frame = 0;
 
     Coeur* vie23 = malloc(sizeof(Coeur));
     vie23->rect.h = CASESIZE;
     vie23->rect.w = CASESIZE;
     vie23->rect.x = 480;
     vie23->rect.y = 560;
-    vie23->frame = 0;
+
+    Coeurs* coeurs2 = malloc(sizeof(Coeurs));
+    coeurs2->coeur1 = vie21;
+    coeurs2->coeur2 = vie22;
+    coeurs2->coeur3 = vie23;
+
+    Flams* flams1 = createFlams(renderer);
+    Flams* flams2 = createFlams(renderer);
 
 
     int exit = EXIT_FAILURE;
@@ -135,8 +142,6 @@ int main(int argc, char* argv[]){
     textures.menu = menuTexture;
     textures.brick = brickTexture;
 
-
-
     bee1->position = BAS;
     bee1->vie = 3;
     bee1->nbbombe = 5;
@@ -153,6 +158,7 @@ int main(int argc, char* argv[]){
     bomb1->texture = bombTexture;
     bomb1->rect.h = 40;
     bomb1->rect.w = 40;
+    bomb1->flams = flams1;
 
     Bomb *bomb2 = malloc(sizeof(Bomb));
     bomb2->frame = 0;
@@ -160,6 +166,7 @@ int main(int argc, char* argv[]){
     bomb2->texture = bombTexture;
     bomb2->rect.h = 40;
     bomb2->rect.w = 40;
+    bomb2->flams = flams2;
 
     vie11->texture = coeurTexture;
     vie12->texture = coeurTexture;
@@ -195,6 +202,7 @@ int main(int argc, char* argv[]){
                                 bomb1->rect.x = bee1->rect.x;
                                 bomb1->rect.y = bee1->rect.y;
                                 bomb1->shown = TRUE;
+                                setCoordFlams(flams1, bomb1->rect.x, bomb1->rect.y);
                             }
                         }
                         break;
@@ -223,6 +231,7 @@ int main(int argc, char* argv[]){
                                 bomb2->rect.x = bee2->rect.x;
                                 bomb2->rect.y = bee2->rect.y;
                                 bomb2->shown = TRUE;
+                                setCoordFlams(flams2, bomb2->rect.x, bomb2->rect.y);
                             }
                         }
                         break;
@@ -258,73 +267,83 @@ int main(int argc, char* argv[]){
         if(statut == INGAME && (bee1->vie == 0 || bee2->vie == 0)){
             LOOP=FALSE;
         }
+        //BOMB1 ANIMATION
         if(statut == INGAME && bomb1->shown){
             bomb1->frame++;
-            if(bomb1->frame == 10)
+            if(bomb1->frame == TPSEXPLOSION/6){
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
-            if(bomb1->frame == 20)
+                setCoordFlams(flams1, bomb1->rect.x, bomb1->rect.y);
+            }
+            if(bomb1->frame == 2*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/2.bmp", renderer);
-            if(bomb1->frame == 30)
+            if(bomb1->frame == 3*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/3.bmp", renderer);
-            if(bomb1->frame == 40)
+            if(bomb1->frame == 4*TPSEXPLOSION/6){
                 bomb1->texture = loadImage("bombTexture/4.bmp", renderer);
-            if(bomb1->frame == 50)
+                flams1->shown = TRUE;
+            }
+            if(bomb1->frame == 5*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
-                explosion(bee1,bee2, bomb1, map, bricks);
+                explosion(bee1,bee2, bomb1, flams1, map, bricks);
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
+        //BOMB2 ANIMATION
         if(statut == INGAME && bomb2->shown){
             bomb2->frame++;
-            if(bomb2->frame == 10)
+            if(bomb2->frame == TPSEXPLOSION/6){
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
-            if(bomb2->frame == 20)
+                setCoordFlams(flams2, bomb2->rect.x, bomb2->rect.y);
+            }
+            if(bomb2->frame == 2*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/2.bmp", renderer);
-            if(bomb2->frame == 30)
+            if(bomb2->frame == 3*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/3.bmp", renderer);
-            if(bomb2->frame == 40)
+            if(bomb2->frame == 4*TPSEXPLOSION/6){
                 bomb2->texture = loadImage("bombTexture/4.bmp", renderer);
-            if(bomb2->frame == 50)
+                flams2->shown = TRUE;
+            }
+            if(bomb2->frame == 5*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
-                explosion(bee1,bee2, bomb2, map, bricks);
+                explosion(bee1,bee2, bomb2, flams2, map, bricks);
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
         if(statut == INGAME && bee1->vie == 1){
-            vie11->shown = TRUE;
-            vie12->shown = FALSE;
-            vie13->shown = FALSE;
+            coeurs1->coeur1->shown = TRUE;
+            coeurs1->coeur2->shown = FALSE;
+            coeurs1->coeur3->shown = FALSE;
         }
         if(statut == INGAME && bee1->vie == 2){
-            vie11->shown = TRUE;
-            vie12->shown = TRUE;
-            vie13->shown = FALSE;
+            coeurs1->coeur1->shown = TRUE;
+            coeurs1->coeur2->shown = TRUE;
+            coeurs1->coeur3->shown = FALSE;
         }
 
         if(statut == INGAME && bee1->vie == 3){
-            vie11->shown = TRUE;
-            vie12->shown = TRUE;
-            vie13->shown = TRUE;
+            coeurs1->coeur1->shown = TRUE;
+            coeurs1->coeur2->shown = TRUE;
+            coeurs1->coeur3->shown = TRUE;
         }
         if(statut == INGAME && bee2->vie == 1){
-            vie21->shown = TRUE;
-            vie22->shown = FALSE;
-            vie23->shown = FALSE;
+            coeurs2->coeur1->shown = TRUE;
+            coeurs2->coeur2->shown = FALSE;
+            coeurs2->coeur3->shown = FALSE;
         }
         if(statut == INGAME && bee2->vie == 2){
-            vie21->shown = TRUE;
-            vie22->shown = TRUE;
-            vie23->shown = FALSE;
+            coeurs2->coeur1->shown = TRUE;
+            coeurs2->coeur2->shown = TRUE;
+            coeurs2->coeur3->shown = FALSE;
         }
 
         if(statut == INGAME && bee2->vie == 3){
-            vie21->shown = TRUE;
-            vie22->shown = TRUE;
-            vie23->shown = TRUE;
+            coeurs2->coeur1->shown = TRUE;
+            coeurs2->coeur2->shown = TRUE;
+            coeurs2->coeur3->shown = TRUE;
         }
-        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut, vie11, vie12, vie13, vie21, vie22, vie23);
+        render(bee1, bee2, textures, bomb1, bomb2, renderer, map, bricks, statut, coeurs1, coeurs2, flams1, flams2);
         SDL_Delay(16);
     }
     SDL_DestroyWindow(window);
@@ -364,7 +383,10 @@ Quit://TO QUIT
     free(vie21);
     free(vie22);
     free(vie23);
-    //free(map);
+    free(coeurs1);
+    free(coeurs2);
+    free(flams1);
+    free(flams2);
     SDL_Quit();
     return exit;
 }
@@ -418,6 +440,7 @@ void init_map(int** map, SDL_Rect* bricks){
             j = rand() % SIZE;
         }
         map[i][j] = BRICK;
+        //A CHANGER
         map[1][2] = VIDE;
         map[2][1] = VIDE;
         map[13][12] = VIDE;
@@ -427,7 +450,7 @@ void init_map(int** map, SDL_Rect* bricks){
     map[13][13] = JOUEUR2;
 }
 
-void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut,Coeur* vie11,Coeur* vie12,Coeur* vie13,Coeur* vie21,Coeur* vie22,Coeur* vie23){
+void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut, Coeurs* coeurs1, Coeurs* coeurs2, Flams* flams1, Flams* flams2){
     if(statut == MENU){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, textures.menu, NULL, NULL);
@@ -454,18 +477,38 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bo
         if(bomb2->shown)
             SDL_RenderCopy(renderer, bomb2->texture, NULL, &bomb2->rect);
 
-        if(vie11->shown)
-            SDL_RenderCopy(renderer, vie11->texture, NULL, &vie11->rect);
-        if(vie12->shown)
-            SDL_RenderCopy(renderer, vie12->texture, NULL, &vie12->rect);
-        if(vie13->shown)
-            SDL_RenderCopy(renderer, vie13->texture, NULL, &vie13->rect);
-        if(vie21->shown)
-            SDL_RenderCopy(renderer, vie21->texture, NULL, &vie21->rect);
-        if(vie22->shown)
-            SDL_RenderCopy(renderer, vie22->texture, NULL, &vie22->rect);
-        if(vie23->shown)
-            SDL_RenderCopy(renderer, vie23->texture, NULL, &vie23->rect);
+        if(coeurs1->coeur1->shown)
+            SDL_RenderCopy(renderer, coeurs1->coeur1->texture, NULL, &coeurs1->coeur1->rect);
+        if(coeurs1->coeur2->shown)
+            SDL_RenderCopy(renderer, coeurs1->coeur2->texture, NULL, &coeurs1->coeur2->rect);
+        if(coeurs1->coeur3->shown)
+            SDL_RenderCopy(renderer, coeurs1->coeur3->texture, NULL, &coeurs1->coeur3->rect);
+        if(coeurs2->coeur1->shown)
+            SDL_RenderCopy(renderer, coeurs2->coeur1->texture, NULL, &coeurs2->coeur1->rect);
+        if(coeurs2->coeur2->shown)
+            SDL_RenderCopy(renderer, coeurs2->coeur2->texture, NULL, &coeurs2->coeur2->rect);
+        if(coeurs2->coeur3->shown)
+            SDL_RenderCopy(renderer, coeurs2->coeur3->texture, NULL, &coeurs2->coeur3->rect);
+        if(flams1->shown){
+            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->b1);
+            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->b2);
+            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->h1);
+            SDL_RenderCopy(renderer, flams1->vertical, NULL, &flams1->h2);
+            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->g1);
+            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->g2);
+            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->d1);
+            SDL_RenderCopy(renderer, flams1->horizontal, NULL, &flams1->d2);
+        }
+        if(flams2->shown){
+            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->b1);
+            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->b2);
+            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->h1);
+            SDL_RenderCopy(renderer, flams2->vertical, NULL, &flams2->h2);
+            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->g1);
+            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->g2);
+            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->d1);
+            SDL_RenderCopy(renderer, flams2->horizontal, NULL, &flams2->d2);
+        }
 
         SDL_RenderCopy(renderer, joueur1->texture, NULL, &joueur1->rect);
         SDL_RenderCopy(renderer, joueur2->texture, NULL, &joueur2->rect);
@@ -611,7 +654,7 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int n
     }
 }
 
-void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect* bricks){
+void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks){
     int x = bomb->rect.x;
     int y = bomb->rect.y;
     bomb->frame = 0;
@@ -620,6 +663,7 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect*
     int bBot = FALSE;
     int bLeft = FALSE;
     int bRight = FALSE;
+    flams->shown = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
             //MODIFIER LA CONDITION CAR BUG
         if(x/CASESIZE + i<15 && x/CASESIZE - i>=0 && y/CASESIZE + i<15 && y/CASESIZE - i >= 0){
@@ -661,6 +705,55 @@ void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect*
                 joueur2->vie--;
         }
     }
+}
+
+Flams* createFlams(SDL_Renderer* renderer){
+    Flams* flams = malloc(sizeof(Flams));
+    flams->horizontal = loadImage("flams/hori.bmp", renderer);
+    flams->vertical = loadImage("flams/vert.bmp", renderer);
+    //HAUTEUR
+    flams->b1.h = CASESIZE;
+    flams->b2.h = CASESIZE;
+    flams->h1.h = CASESIZE;
+    flams->h2.h = CASESIZE;
+    flams->g1.h = CASESIZE;
+    flams->g2.h = CASESIZE;
+    flams->d1.h = CASESIZE;
+    flams->d2.h = CASESIZE;
+    //LARGEUR
+    flams->b1.w = CASESIZE;
+    flams->b2.w = CASESIZE;
+    flams->h1.w = CASESIZE;
+    flams->h2.w = CASESIZE;
+    flams->g1.w = CASESIZE;
+    flams->g2.w = CASESIZE;
+    flams->d1.w = CASESIZE;
+    flams->d2.w = CASESIZE;
+
+    flams->shown = FALSE;
+
+    return flams;
+}
+
+void setCoordFlams(Flams* flams, int x, int y){
+    //X
+    flams->b1.x = x;
+    flams->b2.x = x;
+    flams->h1.x = x;
+    flams->h2.x = x;
+    flams->g1.x = x - CASESIZE;
+    flams->g2.x = x - 2*CASESIZE;
+    flams->d1.x = x + CASESIZE;
+    flams->d2.x = x + 2*CASESIZE;
+    //Y
+    flams->b1.y = y - CASESIZE;
+    flams->b2.y = y - 2*CASESIZE;
+    flams->h1.y = y + CASESIZE;
+    flams->h2.y = y + 2*CASESIZE;
+    flams->g1.y = y;
+    flams->g2.y = y;
+    flams->d1.y = y;
+    flams->d2.y = y;
 }
 
 
