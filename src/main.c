@@ -418,6 +418,10 @@ void init_map(int** map, SDL_Rect* bricks){
             j = rand() % SIZE;
         }
         map[i][j] = BRICK;
+        map[1][2] = VIDE;
+        map[2][1] = VIDE;
+        map[13][12] = VIDE;
+        map[12][13] = VIDE;
     }
     map[1][1] = JOUEUR1;
     map[13][13] = JOUEUR2;
