@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL.h>
 #include "struct.h"
 #include "main.h"
@@ -27,6 +28,11 @@ int main(int argc, char* argv[]){
 
     init_map(map, bricks);
 
+    if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+    {
+        printf("%s", Mix_GetError());
+    }
+
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
@@ -39,6 +45,10 @@ int main(int argc, char* argv[]){
     SDL_Texture *coeurTexture = NULL;
     SDL_Texture *expVertical = NULL;
     SDL_Texture *expHorizontal = NULL;
+
+    Mix_Music *musique;
+    musique = Mix_LoadMUS("bee.wav");
+
     SDL_Event event;
 
     Joueur* bee1 = malloc(sizeof(Joueur));
@@ -193,6 +203,7 @@ int main(int argc, char* argv[]){
     SDL_RenderCopy(renderer, vie22->texture, NULL, &vie22->rect);
     SDL_RenderCopy(renderer, vie23->texture, NULL, &vie23->rect);
     SDL_RenderPresent(renderer);
+    Mix_PlayMusic(musique, -1);
 
     int LOOP = TRUE;
     while(LOOP){
@@ -395,6 +406,8 @@ Quit://TO QUIT
     free(flams1);
     free(flams2);
     SDL_Quit();
+    Mix_FreeMusic(musique);
+    Mix_CloseAudio();
     return exit;
 }
 
@@ -723,7 +736,7 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int n
     }
 }
 
-void explosion(Joueur* joueur1,Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks){
+void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks){
     int x = bomb->rect.x;
     int y = bomb->rect.y;
     bomb->frame = 0;
