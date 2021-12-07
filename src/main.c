@@ -314,7 +314,6 @@ int main(int argc, char* argv[]){
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
                 endBomb(bomb1, flams1);
-                Mix_PlayChannel(-1, explo, 1);
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -340,7 +339,6 @@ int main(int argc, char* argv[]){
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
                 endBomb(bomb2, flams2);
-                Mix_PlayChannel(-1,explo, 1);
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
