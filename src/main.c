@@ -299,6 +299,7 @@ int main(int argc, char* argv[]){
             if(bomb1->frame == TPSEXPLOSION/6){
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
                 setCoordFlams(flams1, bomb1->rect.x, bomb1->rect.y);
+                Mix_PlayChannel(-1, explo, 1);
             }
             if(bomb1->frame == 2*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/2.bmp", renderer);
@@ -312,7 +313,6 @@ int main(int argc, char* argv[]){
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
                 explosion(bee1,bee2, bomb1, flams1, map, bricks,dmg);
-                Mix_PlayChannel(-1, explo, 1);
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -322,9 +322,11 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == TPSEXPLOSION/6){
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
                 setCoordFlams(flams2, bomb2->rect.x, bomb2->rect.y);
+                Mix_PlayChannel(-1,explo, 1);
             }
             if(bomb2->frame == 2*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/2.bmp", renderer);
+
             if(bomb2->frame == 3*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/3.bmp", renderer);
             if(bomb2->frame == 4*TPSEXPLOSION/6){
@@ -334,8 +336,9 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == 5*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
+
                 explosion(bee1,bee2, bomb2, flams2, map, bricks,dmg);
-                Mix_PlayChannel(-1,explo, 1);
+
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
