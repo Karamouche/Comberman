@@ -424,6 +424,10 @@ Quit://TO QUIT
     Mix_FreeChunk(dead);
     Mix_FreeChunk(explo);
     Mix_FreeChunk(dmg);
+    free(musique);
+    free(dead);
+    free(explo);
+    free(dmg);
     return exit;
 }
 
