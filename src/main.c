@@ -290,7 +290,7 @@ int main(int argc, char* argv[]){
         }
 
         if(statut == INGAME && (bee1->vie == 0 || bee2->vie == 0)){
-            Mix_PlayChannel(-1, dead, 1);
+            Mix_PlayChannel(-1, dead, 0);
             LOOP=FALSE;
         }
         //BOMB1 ANIMATION
@@ -299,7 +299,7 @@ int main(int argc, char* argv[]){
             if(bomb1->frame == TPSEXPLOSION/6){
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
                 setCoordFlams(flams1, bomb1->rect.x, bomb1->rect.y);
-                Mix_PlayChannel(-1, explo, 1);
+                Mix_PlayChannel(-1, explo, 0);
             }
             if(bomb1->frame == 2*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/2.bmp", renderer);
@@ -323,7 +323,7 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == TPSEXPLOSION/6){
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
                 setCoordFlams(flams2, bomb2->rect.x, bomb2->rect.y);
-                Mix_PlayChannel(-1,explo, 1);
+                Mix_PlayChannel(-1,explo, 0);
             }
             if(bomb2->frame == 2*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/2.bmp", renderer);
@@ -779,11 +779,11 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bBot = TRUE;
              else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR1){
                 joueur1->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
              else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR2){
                 joueur2->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
         }
         if(isMapped(x/CASESIZE, y/CASESIZE - i)){
@@ -794,11 +794,11 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bTop = TRUE;
              else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR1){
                 joueur1->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
              else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR2){
                 joueur2->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
         }
         if(isMapped(x/CASESIZE + i, y/CASESIZE)){
@@ -809,11 +809,11 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bRight = TRUE;
              else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR1){
                 joueur1->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
              else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR2){
                 joueur2->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
         }
         if(isMapped(x/CASESIZE - i, y/CASESIZE)){
@@ -824,11 +824,11 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bLeft = TRUE;
              else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR1){
                 joueur1->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
              else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR2){
                 joueur2->vie--;
-                Mix_PlayChannel(-1, dmg, 1);
+                Mix_PlayChannel(-1, dmg, 0);
             }
         }
     }
