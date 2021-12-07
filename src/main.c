@@ -209,6 +209,7 @@ int main(int argc, char* argv[]){
     SDL_RenderCopy(renderer, vie22->texture, NULL, &vie22->rect);
     SDL_RenderCopy(renderer, vie23->texture, NULL, &vie23->rect);
     SDL_RenderPresent(renderer);
+    //ON JOUE LA MUSIQUE
     Mix_PlayMusic(musique, -1);
 
     int LOOP = TRUE;
