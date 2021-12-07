@@ -308,11 +308,17 @@ int main(int argc, char* argv[]){
             if(bomb1->frame == 4*TPSEXPLOSION/6){
                 bomb1->texture = loadImage("bombTexture/4.bmp", renderer);
                 flams1->shown = TRUE;
+                explosion(bee1,bee2, bomb1, flams1, map, bricks,dmg);
             }
             if(bomb1->frame == 5*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
+<<<<<<< Updated upstream
                 explosion(bee1,bee2, bomb1, flams1, map, bricks,dmg);
+=======
+                endBomb(bomb1, flams1);
+                Mix_PlayChannel(-1, explo, 1);
+>>>>>>> Stashed changes
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -332,13 +338,19 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == 4*TPSEXPLOSION/6){
                 bomb2->texture = loadImage("bombTexture/4.bmp", renderer);
                 flams2->shown = TRUE;
+                explosion(bee1,bee2, bomb2, flams2, map, bricks,dmg);
             }
             if(bomb2->frame == 5*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
+<<<<<<< Updated upstream
 
                 explosion(bee1,bee2, bomb2, flams2, map, bricks,dmg);
 
+=======
+                endBomb(bomb2, flams2);
+                Mix_PlayChannel(-1,explo, 1);
+>>>>>>> Stashed changes
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -752,16 +764,19 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int n
     }
 }
 
-void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks,Mix_Chunk* dmg){
-    int x = bomb->rect.x;
-    int y = bomb->rect.y;
+void endBomb(Bomb* bomb, Flams* flams){
+    flams->shown = FALSE;
     bomb->frame = 0;
     bomb->shown = FALSE;
+}
+
+void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks, Mix_Chunk* dmg){
+    int x = bomb->rect.x;
+    int y = bomb->rect.y;
     int bTop = FALSE;
     int bBot = FALSE;
     int bLeft = FALSE;
     int bRight = FALSE;
-    flams->shown = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
         //MODIFIER LA CONDITION CAR BUG
         if(isMapped(x/CASESIZE, y/CASESIZE + i)){

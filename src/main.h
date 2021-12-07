@@ -26,5 +26,6 @@ void animateBee(SDL_Renderer* renderer, Joueur* joueur, int beeN);
 Flams* createFlams(SDL_Renderer* renderer);
 void setCoordFlams(Flams* flams, int x, int y);
 int isMapped(int x, int y);
+void endBomb(Bomb* bomb, Flams* flams);
 
 #endif
