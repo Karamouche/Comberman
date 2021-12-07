@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 
     init_map(map, bricks);
 
-    if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+        if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
     {
         printf("%s", Mix_GetError());
     }
@@ -48,6 +48,12 @@ int main(int argc, char* argv[]){
 
     Mix_Music *musique;
     musique = Mix_LoadMUS("bee.wav");
+    Mix_Chunk *explo;
+    explo = Mix_LoadWAV("sounds/CreeperExplosion.wav");
+    Mix_Chunk *dead;
+    dead = Mix_LoadWAV("sounds/dead.wav");
+    Mix_Chunk *dmg;
+    dmg = Mix_LoadWAV("sounds/dmg.wav");
 
     SDL_Event event;
 
@@ -283,6 +289,7 @@ int main(int argc, char* argv[]){
         }
 
         if(statut == INGAME && (bee1->vie == 0 || bee2->vie == 0)){
+            Mix_PlayChannel(2, dead, 1);
             LOOP=FALSE;
         }
         //BOMB1 ANIMATION
@@ -303,7 +310,8 @@ int main(int argc, char* argv[]){
             if(bomb1->frame == 5*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
-                explosion(bee1,bee2, bomb1, flams1, map, bricks);
+                explosion(bee1,bee2, bomb1, flams1, map, bricks,dmg);
+                Mix_PlayChannel(3, explo, 1);
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -325,7 +333,8 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == 5*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
-                explosion(bee1,bee2, bomb2, flams2, map, bricks);
+                explosion(bee1,bee2, bomb2, flams2, map, bricks,dmg);
+                Mix_PlayChannel(3,explo, 1);
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
         }
@@ -408,6 +417,9 @@ Quit://TO QUIT
     SDL_Quit();
     Mix_FreeMusic(musique);
     Mix_CloseAudio();
+    Mix_FreeChunk(dead);
+    Mix_FreeChunk(explo);
+    Mix_FreeChunk(dmg);
     return exit;
 }
 
@@ -736,7 +748,7 @@ void beemove(Joueur *joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int n
     }
 }
 
-void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks){
+void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks,Mix_Chunk* dmg){
     int x = bomb->rect.x;
     int y = bomb->rect.y;
     bomb->frame = 0;
@@ -754,10 +766,12 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bBot = TRUE;
             }else if(map[x/CASESIZE][y/CASESIZE + i] == BLOC)
                 bBot = TRUE;
-             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR1)
+             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR1){
                 joueur1->vie--;
-             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR2)
+                Mix_PlayChannel(4, dmg, 1);}
+             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR2){
                 joueur2->vie--;
+                Mix_PlayChannel(4, dmg, 1);}
         }
         if(isMapped(x/CASESIZE, y/CASESIZE - i)){
             if(map[x/CASESIZE][y/CASESIZE - i] == BRICK && !bTop){
@@ -765,10 +779,12 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bTop = TRUE;
             }else if(map[x/CASESIZE][y/CASESIZE - i] == BLOC)
                 bTop = TRUE;
-             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR1)
+             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR1){
                 joueur1->vie--;
-             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR2)
+                Mix_PlayChannel(4, dmg, 1);}
+             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR2){
                 joueur2->vie--;
+                Mix_PlayChannel(4, dmg, 1);}
         }
         if(isMapped(x/CASESIZE + i, y/CASESIZE)){
             if(map[x/CASESIZE + i][y/CASESIZE] == BRICK && !bRight){
@@ -776,10 +792,12 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bRight = TRUE;
             }else if(map[x/CASESIZE + i][y/CASESIZE] == BLOC)
                 bRight = TRUE;
-             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR1)
+             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR1){
                 joueur1->vie--;
-             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR2)
+                Mix_PlayChannel(4, dmg, 1);}
+             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR2){
                 joueur2->vie--;
+                Mix_PlayChannel(4, dmg, 1);}
         }
         if(isMapped(x/CASESIZE - i, y/CASESIZE)){
             if(map[x/CASESIZE - i][y/CASESIZE] == BRICK && !bLeft){
@@ -787,10 +805,12 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 bLeft = TRUE;
             }else if(map[x/CASESIZE - i][y/CASESIZE] == BLOC)
                 bLeft = TRUE;
-             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR1)
+             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR1){
                 joueur1->vie--;
-             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR2)
+                Mix_PlayChannel(4, dmg, 1);}
+             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR2){
                 joueur2->vie--;
+                Mix_PlayChannel(4, dmg, 1);}
         }
     }
 }

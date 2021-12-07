@@ -21,7 +21,7 @@ SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
 void beemove(Joueur* joueur, int DIR, int** map, Bomb* bomb1, Bomb* bomb2, int num);
 void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut,Coeurs* coeurs1, Coeurs* coeurs2);
 void init_map(int** map, SDL_Rect* bricks);
-void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks);
+void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks,Mix_Chunk* dmg);
 void animateBee(SDL_Renderer* renderer, Joueur* joueur, int beeN);
 Flams* createFlams(SDL_Renderer* renderer);
 void setCoordFlams(Flams* flams, int x, int y);
