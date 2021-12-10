@@ -50,6 +50,9 @@ typedef struct Textures{
     SDL_Texture* brick;
     SDL_Texture* expHorizontal;
     SDL_Texture* expVertical;
+    SDL_Texture* p1win;
+    SDL_Texture* p2win;
+    SDL_Texture* nwin;
 }Textures;
 
 #endif

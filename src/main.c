@@ -45,6 +45,9 @@ int main(int argc, char* argv[]){
     SDL_Texture *coeurTexture = NULL;
     SDL_Texture *expVertical = NULL;
     SDL_Texture *expHorizontal = NULL;
+    SDL_Texture *p1win = NULL;
+    SDL_Texture *p2win = NULL;
+    SDL_Texture *nwin = NULL;
 
     Mix_Music *musique;
     musique = Mix_LoadMUS("bee.wav");
@@ -155,6 +158,15 @@ int main(int argc, char* argv[]){
     coeurTexture = loadImage("coeur.bmp", renderer);
     if(coeurTexture == NULL)
         goto Quit;
+    p1win = loadImage("p1win.bmp", renderer);
+    if(p1win == NULL)
+        goto Quit;
+    p2win = loadImage("p2win.bmp", renderer);
+    if(p2win == NULL)
+        goto Quit;
+    nwin = loadImage("nwin.bmp", renderer);
+    if(nwin == NULL)
+        goto Quit;
 
     expHorizontal = loadImage("flams/hori.bmp", renderer);
     expVertical = loadImage("flams/vert.bmp", renderer);
@@ -164,6 +176,8 @@ int main(int argc, char* argv[]){
     textures.brick = brickTexture;
     textures.expHorizontal = expHorizontal;
     textures.expVertical = expVertical;
+    textures.p1win = p1win;
+    textures.p2win = p2win;
 
     bee1->position = BAS;
     bee1->vie = 3;
@@ -232,6 +246,8 @@ int main(int argc, char* argv[]){
                                 bomb1->shown = TRUE;
                                 setCoordFlams(flams1, bomb1->rect.x, bomb1->rect.y);
                             }
+                        }else{
+                            LOOP = FALSE;
                         }
                         break;
                     case SDLK_ESCAPE:
@@ -293,9 +309,10 @@ int main(int argc, char* argv[]){
         }
 
         if(statut == INGAME && (bee1->vie == 0 || bee2->vie == 0)){
+            statut = ENDGAME;
             Mix_PlayChannel(-1, dead, 0);
-            LOOP=FALSE;
         }
+
         //BOMB1 ANIMATION
         if(statut == INGAME && bomb1->shown){
             bomb1->frame++;
@@ -401,6 +418,12 @@ Quit://TO QUIT
         SDL_DestroyTexture(brickTexture);
     if(coeurTexture != NULL)
         SDL_DestroyTexture(coeurTexture);
+    if(p1win != NULL)
+        SDL_DestroyTexture(p1win);
+    if(p2win != NULL)
+        SDL_DestroyTexture(p2win);
+    if(nwin != NULL)
+        SDL_DestroyTexture(nwin);
     if(renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if(window != NULL)
@@ -627,6 +650,16 @@ void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bo
         SDL_RenderCopy(renderer, joueur2->texture, NULL, &joueur2->rect);
         SDL_RenderPresent(renderer);
 
+    }else{
+        SDL_RenderClear(renderer);
+        if(joueur1->vie == 0){
+            SDL_RenderCopy(renderer, textures.p2win, NULL, NULL);
+        }else if(joueur2->vie == 0){
+            SDL_RenderCopy(renderer, textures.p1win, NULL, NULL);
+        }else{
+            SDL_RenderCopy(renderer, textures.nwin, NULL, NULL);
+        }
+        SDL_RenderPresent(renderer);
     }
 }
 
