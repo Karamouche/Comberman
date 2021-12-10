@@ -308,11 +308,12 @@ int main(int argc, char* argv[]){
             if(bomb1->frame == 4*TPSEXPLOSION/6){
                 bomb1->texture = loadImage("bombTexture/4.bmp", renderer);
                 flams1->shown = TRUE;
-                explosion(bee1,bee2, bomb1, flams1, map, bricks,dmg);
+                explosionDamage(bee1, bee2, bomb1, dmg, map);
             }
             if(bomb1->frame == 5*TPSEXPLOSION/6)
                 bomb1->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb1->frame == TPSEXPLOSION){
+                explosion(bee1,bee2, bomb1, map, bricks);
                 endBomb(bomb1, flams1);
                 bomb1->texture = loadImage("bombTexture/1.bmp", renderer);
             }
@@ -333,11 +334,12 @@ int main(int argc, char* argv[]){
             if(bomb2->frame == 4*TPSEXPLOSION/6){
                 bomb2->texture = loadImage("bombTexture/4.bmp", renderer);
                 flams2->shown = TRUE;
-                explosion(bee1,bee2, bomb2, flams2, map, bricks,dmg);
+                explosionDamage(bee1, bee2, bomb2, dmg, map);
             }
             if(bomb2->frame == 5*TPSEXPLOSION/6)
                 bomb2->texture = loadImage("bombTexture/5.bmp", renderer);
             if(bomb2->frame == TPSEXPLOSION){
+                explosion(bee1,bee2, bomb2, map, bricks);
                 endBomb(bomb2, flams2);
                 bomb2->texture = loadImage("bombTexture/1.bmp", renderer);
             }
@@ -768,7 +770,7 @@ void endBomb(Bomb* bomb, Flams* flams){
     bomb->shown = FALSE;
 }
 
-void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int** map, SDL_Rect* bricks, Mix_Chunk* dmg){
+void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect* bricks){
     int x = bomb->rect.x;
     int y = bomb->rect.y;
     int bTop = FALSE;
@@ -777,9 +779,71 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
     int bRight = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
         //MODIFIER LA CONDITION CAR BUG
-        if(isMapped(x/CASESIZE, y/CASESIZE + i)){
-            if(map[x/CASESIZE][y/CASESIZE + i] == BRICK && !bBot){
+        if(isMapped(x/CASESIZE, y/CASESIZE + i) && !bBot){
+            if(map[x/CASESIZE][y/CASESIZE + i] == BRICK){
                 map[x/CASESIZE][y/CASESIZE + i] = VIDE;
+                bBot = TRUE;
+            }else if(map[x/CASESIZE][y/CASESIZE + i] == BLOC)
+                bBot = TRUE;
+             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR1){
+                bBot = TRUE;
+            }
+             else if(map[x/CASESIZE][y/CASESIZE + i] == JOUEUR2){
+                bBot = TRUE;
+            }
+        }
+        if(isMapped(x/CASESIZE, y/CASESIZE - i) && !bTop){
+            if(map[x/CASESIZE][y/CASESIZE - i] == BRICK){
+                map[x/CASESIZE][y/CASESIZE - i] = VIDE;
+                bTop = TRUE;
+            }else if(map[x/CASESIZE][y/CASESIZE - i] == BLOC)
+                bTop = TRUE;
+             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR1){
+                bTop = TRUE;
+            }
+             else if(map[x/CASESIZE][y/CASESIZE - i] == JOUEUR2){
+                bTop = TRUE;
+            }
+        }
+        if(isMapped(x/CASESIZE + i, y/CASESIZE) && !bRight){
+            if(map[x/CASESIZE + i][y/CASESIZE] == BRICK){
+                map[x/CASESIZE + i][y/CASESIZE] = VIDE;
+                bRight = TRUE;
+            }else if(map[x/CASESIZE + i][y/CASESIZE] == BLOC)
+                bRight = TRUE;
+             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR1){
+                bRight = TRUE;
+            }
+             else if(map[x/CASESIZE + i][y/CASESIZE] == JOUEUR2){
+                bRight = TRUE;
+            }
+        }
+        if(isMapped(x/CASESIZE - i, y/CASESIZE) && !bLeft){
+            if(map[x/CASESIZE - i][y/CASESIZE] == BRICK){
+                map[x/CASESIZE - i][y/CASESIZE] = VIDE;
+                bLeft = TRUE;
+            }else if(map[x/CASESIZE - i][y/CASESIZE] == BLOC)
+                bLeft = TRUE;
+             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR1){
+                bLeft = TRUE;
+            }
+             else if(map[x/CASESIZE - i][y/CASESIZE] == JOUEUR2){
+                bLeft = TRUE;
+            }
+        }
+    }
+}
+
+void explosionDamage(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Mix_Chunk* dmg, int** map){
+    int x = bomb->rect.x;
+    int y = bomb->rect.y;
+    int bTop = FALSE;
+    int bBot = FALSE;
+    int bLeft = FALSE;
+    int bRight = FALSE;
+    for(int i = 1; i <= LENEXPLOSION ; i++){
+        if(isMapped(x/CASESIZE, y/CASESIZE + i) && !bBot){
+            if(map[x/CASESIZE][y/CASESIZE + i] == BRICK){
                 bBot = TRUE;
             }else if(map[x/CASESIZE][y/CASESIZE + i] == BLOC)
                 bBot = TRUE;
@@ -792,9 +856,8 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 Mix_PlayChannel(-1, dmg, 0);
             }
         }
-        if(isMapped(x/CASESIZE, y/CASESIZE - i)){
-            if(map[x/CASESIZE][y/CASESIZE - i] == BRICK && !bTop){
-                map[x/CASESIZE][y/CASESIZE - i] = VIDE;
+        if(isMapped(x/CASESIZE, y/CASESIZE - i) && !bTop){
+            if(map[x/CASESIZE][y/CASESIZE - i] == BRICK){
                 bTop = TRUE;
             }else if(map[x/CASESIZE][y/CASESIZE - i] == BLOC)
                 bTop = TRUE;
@@ -807,9 +870,8 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 Mix_PlayChannel(-1, dmg, 0);
             }
         }
-        if(isMapped(x/CASESIZE + i, y/CASESIZE)){
-            if(map[x/CASESIZE + i][y/CASESIZE] == BRICK && !bRight){
-                map[x/CASESIZE + i][y/CASESIZE] = VIDE;
+        if(isMapped(x/CASESIZE + i, y/CASESIZE) && !bRight){
+            if(map[x/CASESIZE + i][y/CASESIZE] == BRICK){
                 bRight = TRUE;
             }else if(map[x/CASESIZE + i][y/CASESIZE] == BLOC)
                 bRight = TRUE;
@@ -822,9 +884,8 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, Flams* flams, int**
                 Mix_PlayChannel(-1, dmg, 0);
             }
         }
-        if(isMapped(x/CASESIZE - i, y/CASESIZE)){
-            if(map[x/CASESIZE - i][y/CASESIZE] == BRICK && !bLeft){
-                map[x/CASESIZE - i][y/CASESIZE] = VIDE;
+        if(isMapped(x/CASESIZE - i, y/CASESIZE) && !bLeft){
+            if(map[x/CASESIZE - i][y/CASESIZE] == BRICK){
                 bLeft = TRUE;
             }else if(map[x/CASESIZE - i][y/CASESIZE] == BLOC)
                 bLeft = TRUE;
