@@ -220,8 +220,11 @@ int main(int argc, char* argv[]){
                 if(event.key.repeat == 0){
                     switch(event.key.keysym.sym){
                     case SDLK_SPACE:
-                        if(statut == MENU)
+                        if(statut == MENU){
                             statut = INGAME;
+                            if(menuTexture != NULL)
+                                SDL_DestroyTexture(menuTexture);
+                        }
                         else if(statut == INGAME){
                             if(bomb1->shown == FALSE){
                                 bomb1->rect.x = bee1->rect.x;
@@ -635,6 +638,7 @@ void animateBee(SDL_Renderer* renderer, Joueur* joueur, int beeN){
                 joueur->UP = TRUE;
             joueur->frame = 0;
             }
+        SDL_DestroyTexture(joueur->texture);
         switch(joueur->position){
         case HAUT:
             if(joueur->UP)
