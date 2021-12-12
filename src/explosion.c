@@ -16,7 +16,6 @@ void explosion(Joueur* joueur1, Joueur* joueur2, Bomb* bomb, int** map, SDL_Rect
     int bLeft = FALSE;
     int bRight = FALSE;
     for(int i = 1; i <= LENEXPLOSION ; i++){
-        //MODIFIER LA CONDITION CAR BUG
         if(isMapped(x/CASESIZE, y/CASESIZE + i) && !bBot){
             if(map[x/CASESIZE][y/CASESIZE + i] == BRICK){
                 map[x/CASESIZE][y/CASESIZE + i] = VIDE;
