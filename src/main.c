@@ -5,6 +5,11 @@
 #include <SDL2/SDL.h>
 #include "struct.h"
 #include "main.h"
+#include "affichage.h"
+#include "deplacement.h"
+#include "explosion.h"
+#include "initialisation.h"
+
 
 int main(int argc, char* argv[]){
     //ON INITIALISE LE RAND

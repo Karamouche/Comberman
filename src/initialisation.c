@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include "struct.h"
 #include "main.h"
+#include "initialisation.h"
 
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)

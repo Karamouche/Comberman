@@ -5,6 +5,8 @@
 #include <SDL2/SDL.h>
 #include "struct.h"
 #include "main.h"
+#include "explosion.h"
+#include "affichage.h"
 
 
 

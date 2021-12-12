@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include "struct.h"
 #include "main.h"
+#include "affichage.h"
 
 
 void render(Joueur *joueur1, Joueur* joueur2, Textures textures, Bomb* bomb1, Bomb* bomb2, SDL_Renderer* renderer, int** map, SDL_Rect* bricks, int statut, Coeurs* coeurs1, Coeurs* coeurs2){
