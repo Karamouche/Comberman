@@ -139,10 +139,10 @@ int main(int argc, char* argv[]){
 
     if(0 != init(&window, &renderer, 600, 600))
         goto Quit;
-    SDL_SetWindowIcon(window, SDL_LoadBMP("icon.bmp"));
+    SDL_SetWindowIcon(window, SDL_LoadBMP("textures/icon.bmp"));
     SDL_SetWindowTitle(window, NAME);
 
-    background = loadImage("background.bmp", renderer);
+    background = loadImage("textures/background.bmp", renderer);
     if(background == NULL)
         goto Quit;
     beeTexture1 = loadImage("beeTexture1/bas0.bmp", renderer);
@@ -154,22 +154,22 @@ int main(int argc, char* argv[]){
     bombTexture = loadImage("bombTexture/0.bmp", renderer);
     if(bombTexture == NULL)
         goto Quit;
-    menuTexture = loadImage("menu.bmp", renderer);
+    menuTexture = loadImage("textures/menu.bmp", renderer);
     if(menuTexture == NULL)
         goto Quit;
-    brickTexture = loadImage("brick.bmp", renderer);
+    brickTexture = loadImage("textures/brick.bmp", renderer);
     if(brickTexture == NULL)
         goto Quit;
-    coeurTexture = loadImage("coeur.bmp", renderer);
+    coeurTexture = loadImage("textures/coeur.bmp", renderer);
     if(coeurTexture == NULL)
         goto Quit;
-    p1win = loadImage("p1win.bmp", renderer);
+    p1win = loadImage("textures/p1win.bmp", renderer);
     if(p1win == NULL)
         goto Quit;
-    p2win = loadImage("p2win.bmp", renderer);
+    p2win = loadImage("textures/p2win.bmp", renderer);
     if(p2win == NULL)
         goto Quit;
-    nwin = loadImage("nwin.bmp", renderer);
+    nwin = loadImage("textures/nwin.bmp", renderer);
     if(nwin == NULL)
         goto Quit;
 
